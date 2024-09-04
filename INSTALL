@@ -1,0 +1,111 @@
+[updated by thomas.buehring 05/01/2010]
+
+Content
+-------
+
+    1. Requirements
+    2. Configuring NDPMon
+    3. Building and installing NDPMon
+    4. Running NDPMon
+
+1. Requirements
+----------------
+
+NDPMon is written in C, which is why you need a C compiler. During the 
+implementation, we used GCC version 4.7
+
+Besides the classic system libraries, other additional libraries are 
+required:
+    * build-essentials
+    * libtool 
+    * autoconf 
+    * automake 
+    * autotools-dev
+    * libxml2-dev
+    * libpcap-dev
+    * bsd-mailx
+
+And for some uses also:
+    * libxslt1-dev
+    * libssl-dev
+    * libnetfilter-queue-dev
+    * wireshark
+    * a web server e.g. apache2
+
+Make sure you have these libraries and the associated headers installed.
+
+In addition to that, NDPMon needs a "mail" program installed to send mail
+notifications, e.g. bsd-mailx in the dependencies list.
+
+2. Configuring NDPMon
+---------------------
+
+If you have troubles with the configure script, regenerate it with the 
+command:
+
+autoreconf -vi
+
+To configure NDPMon with a very basic set of features use:
+
+    ./configure
+
+Use the following options to enable additional features:
+
+    --enable-mac-resolv
+        Resolve the manufacturers of MAC addresses.
+    --enable-countermeasures
+        Respond to certain attacks.
+    --enable-syslogfilter
+        Save syslog messages to /var/log/ndpmon.lo
+    --enable-lnfq
+        Use libnetfilter_queue instead of PCAP.
+        This requires libnetfilter-queue-dev, libnfnetlink and ip6tables to be
+        installed.
+        Do not forget to add a netfilter rule like
+            ip6tables -t raw -A PREROUTING -j NFQUEUE --queue-num 0
+        to enable NDPMon to recieve packets.
+    --enable-webinterface
+        Store station and alert overviews as HTML files in a specified
+        webserver htdocs directory.
+        This requires a running webserver on localhost, e.g. apache2.
+        Use the variable WEBDIR to change the path to the htdocs
+        directory.
+
+3. Building and installing NDPMon
+---------------------------------
+
+To compile and install NDPMon, simply use the command:
+
+    make && make install
+
+To uninstall it, use:
+
+    make uninstall
+
+Note that the install and uninstall targets require root privileges.
+
+Other interesting makefile targets are:
+
+    make clean4svn
+        Extended cleanup of the source code files. You may use this feature
+        in association with autoconf to restore the original configure script
+        and start the build process from scratch.
+    make doc_generate
+        Generates the HTML source code documentation. Requires doxygen to be
+        installed.
+    make doc_clean
+        Removes the HTML source code documenation, if any is present.
+
+4. Running NDPMon
+-----------------
+
+Before running NDPMon, make sure to edit the configuration file
+/usr/local/ndpmon/config_ndpmon.xml to adapt it to your network.
+
+To run NDPMon, use as root:
+
+/etc/init.d/ndpmon start
+
+To stop NDPMon, use as root:
+
+/etc/init.d/ndpmon stop

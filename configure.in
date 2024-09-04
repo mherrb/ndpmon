@@ -1,0 +1,524 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(src/ndpmon.c)
+
+CFLAGS="-O2"
+
+dnl find and test the C compiler
+AC_PROG_CC
+AC_LANG_C
+        
+AC_PROG_MAKE_SET
+
+dnl #####################################################
+dnl Set the directory for variable data
+dnl #####################################################
+case $prefix in
+	/usr | /usr/lib )
+		VARDATADIR="/var/lib"
+		MANDIR="/usr/share/man/man8"
+		;;
+	*)
+		VARDATADIR="/var/local/lib"
+		MANDIR="/usr/local/share/man/man8"
+		;;
+esac
+
+dnl Possible to modify it with --with-var-datadir
+found_var=no
+AC_MSG_CHECKING(for custom variable data directory)
+AC_ARG_WITH([var-datadir], [--with-var-datadir=DIR	Put Variable Data in DIR], [VARDATADIR=$withval])
+
+dnl #####################################################
+dnl Set the directory for the configuration
+#####################################################
+case $prefix in
+	/usr )
+		CONFDIR="/etc"
+		;;
+	*)
+		CONFDIR="/usr/local/etc"
+		;;
+esac
+
+dnl Possible to modify it with --with-var-datadir
+found_conf=no
+AC_MSG_CHECKING(for custom configuration directory)
+AC_ARG_WITH([confdir], [--with-confdir=DIR	Put configuration in DIR], [CONFDIR=$withval])
+
+dnl #####################################################
+dnl OS Type
+dnl #####################################################
+
+AC_MSG_CHECKING(OS Type)
+case $OSTYPE in
+	linux-gnu* | linux-gnueabi | linux | Linux )
+		AC_MSG_RESULT($OSTYPE)
+		OPTIONS="$OPTIONS -D_LINUX_"
+		MAKE_PLUGINS="make -C ./src/plugins"
+		;;
+
+	FreeBSD* | freebsd* | Darwin* | darwin* )
+		AC_MSG_RESULT($OSTYPE)
+		CFLAGS="$CFLAGS -fno-strict-aliasing -pipe "
+		OPTIONS="$OPTIONS -D_FREEBSD_"
+		MAKE_PLUGINS="make -C ./src/plugins"
+		;;
+
+	openbsd4.1* | openbsd* | OpenBSD* )
+		dnl Does not seem to work, dunno why.....
+		AC_MSG_RESULT($OSTYPE)
+		CFLAGS="$CFLAGS -fno-strict-aliasing -pipe "
+		OPTIONS="$OPTIONS -D_OPENBSD_"
+		MAKE_PLUGINS="make -I"
+		;;
+
+	netbsd* | NetBSD* )
+		AC_MSG_RESULT($OSTYPE)
+		CFLAGS="$CFLAGS -fno-strict-aliasing -pipe "
+		OPTIONS="$OPTIONS -D_OPENBSD_"
+		MAKE_PLUGINS="cd ./src/plugins;make;cd -"
+		;;
+
+	*)
+		dnl Recheck for OpenBSD with uname
+		os=`uname`
+		case $os in
+			OpenBSD* | openbsd* )
+				AC_MSG_RESULT($os)
+				CFLAGS="$CFLAGS -fno-strict-aliasing -pipe "
+				OPTIONS="$OPTIONS -D_OPENBSD_"
+				MAKE_PLUGINS="cd ./src/plugins;make;cd -"
+				;;
+
+			Linux* | linux* )
+				AC_MSG_RESULT($os)
+				OPTIONS="$OPTIONS -D_LINUX_"
+				MAKE_PLUGINS="make -C ./src/plugins"
+				;;
+
+			NetBSD* | netbsd* )
+				AC_MSG_RESULT($OSTYPE)
+				CFLAGS="$CFLAGS -fno-strict-aliasing -pipe "
+				OPTIONS="$OPTIONS -D_OPENBSD_"
+				MAKEDIR="cd ./plugins;make;cd -"
+				;;
+
+			*)
+				AC_MSG_ERROR([Only Linux, Mac Os X, FreeBSD, NetBSD  and OpenBSD are supported. Please contact the author to know how you can add more OS types.])
+				;;
+		esac
+esac
+
+dnl #####################################################
+dnl Checks for libxml2
+dnl #####################################################
+
+found_xml2=no
+xml2_dir=/usr/local
+AC_MSG_CHECKING(for libxml2)
+AC_ARG_WITH([libxml2], [--with-libxml2=DIR	Use libxml2 in DIR], [xml2_dir=$withval])
+
+for testdir in $xml2_dir /usr/local /usr ; do
+    if test -x "${testdir}/include/libxml2" -a $found_xml2 = no ; then
+       CFLAGS="$CFLAGS -I${testdir}/include/libxml2"
+       LIBS="$LIBS -L${testdir}/lib -lxml2"
+       found_xml2=$testdir
+    fi
+done
+
+if test $found_xml2 = no ; then
+   AC_MSG_RESULT(no)
+   AC_ERROR([Please install libxml2-dev.]) 
+else
+   AC_MSG_RESULT($found_xml2)
+fi
+
+dnl #####################################################
+dnl Checks for libxslt
+dnl #####################################################
+
+found_xslt=no
+xslt_dir=/usr/local
+AC_MSG_CHECKING(for libxslt)
+AC_ARG_WITH([libxslt], [--with-libxslt=DIR	Use libxslt in DIR], [xslt_dir=$withval])
+
+for testdir in $xslt_dir /usr/local /usr ; do
+    if test -x "${testdir}/include/libxslt" -a $found_xslt = no ; then
+       CFLAGS="$CFLAGS -I${testdir}/include"
+       LIBS="$LIBS -L${testdir}/lib -lxslt"
+       found_xslt=$testdir
+    fi
+done
+
+if test $found_xslt = no ; then
+   AC_MSG_RESULT(no)
+   AC_ERROR(Please install libxslt-dev) 
+else
+   AC_MSG_RESULT($found_xslt)
+fi
+
+
+dnl #####################################################
+dnl Checks for libpthread
+dnl #####################################################
+
+found_pthread=no
+AC_SEARCH_LIBS([pthread_create], [pthread], [found_pthread=yes])
+
+if test $found_pthread = yes ; then
+   AC_CHECK_HEADERS([pthread.h], [], [found_pthread=no])
+fi
+
+if test $found_pthread = no ; then
+   AC_ERROR(Please install libpthread)
+else
+   #CFLAGS="$CFLAGS -lpthread"
+   LIBS="$LIBS -lpthread"
+fi
+
+
+dnl #####################################################
+dnl Checks for libssl
+dnl #####################################################
+
+found_libssl=no
+libssl_dir=/usr/local
+AC_MSG_CHECKING(for libssl)
+AC_ARG_WITH([libssl], [--with-libssl=DIR	Use libssl in DIR], [libssl_dir=$withval])
+
+for testdir in $libssl_dir /usr/local /usr ; do
+    if test -x "${testdir}/include/openssl" -a $found_libssl = no ; then
+       CFLAGS="$CFLAGS -I${testdir}/include"
+       LIBS="$LIBS -L${testdir}/lib -lcrypto"
+       found_libssl=$testdir
+    fi
+done
+
+if test $found_libssl = no ; then
+   AC_MSG_RESULT(no)
+   AC_ERROR(Please install libssl-dev) 
+else
+   AC_MSG_RESULT($found_libssl)
+fi
+
+dnl #####################################################
+dnl Enable libnetfilter_queue instead of pcap
+dnl #####################################################
+
+AC_ARG_ENABLE(lnfq, [--enable-lnfq		enable use of libnetfilter_queue [default=no]],enable_lnfq=yes)
+AC_MSG_CHECKING([which capture library shall be used])
+if test "$enable_lnfq" = "yes"; then
+	AC_MSG_RESULT([Using LIBNETFILTER_QUEUE instead of PCAP $enable_lnfq.])
+else
+	AC_MSG_RESULT([Using PCAP.])
+fi
+
+dnl #####################################################
+dnl Checks for lnfq
+dnl #####################################################
+
+found_lnfq=no
+lnfq_dir=/usr/local
+
+AC_ARG_WITH([liblnfq], [--with-libnetfilter_queue=DIR	Use libnetfilter_queue in DIR], [lnfq_dir=$withval])
+
+if test "$enable_lnfq" = "yes"; then
+    AC_MSG_CHECKING([for libnetfilter_queue])
+    for testdir in $lnfq_dir /usr/local /usr ; do
+        if test -x "${testdir}/include/libnetfilter_queue" -a $found_lnfq = no ; then
+            CFLAGS="$CFLAGS -I${testdir}/include"
+            LIBS="$LIBS -L${testdir}/lib -lnetfilter_queue -L${testdir}/lib -lnfnetlink"
+            found_lnfq=$testdir
+        fi
+    done
+    if test "$found_lnfq" = "no"; then
+        AC_ERROR([Error: You decided to use LIBNETFILTER_QUEUE for capturing. Please install libnetfilter_queue-dev.]) 
+    else
+        CFLAGS="$CFLAGS -D_CAPTURE_USE_LNFQ_"
+        AC_MSG_RESULT($found_lnfq)
+    fi
+fi
+
+
+dnl #####################################################
+dnl Checks for libpcap
+dnl #####################################################
+
+found_pcap=no
+pcap_dir=/usr/local
+
+AC_ARG_WITH([libpcap], [--with-libpcap=DIR	Use libpcap in DIR], [pcap_dir=$withval])
+
+if test "$enable_lnfq" != "yes"; then
+    AC_MSG_CHECKING([for libpcap])
+    for testdir in $pcap_dir /usr/local /usr ; do
+        if test -f "${testdir}/include/pcap.h" -a $found_pcap = no ; then
+           CFLAGS="$CFLAGS -I${testdir}/include"
+           LIBS="$LIBS -L${testdir}/lib -lpcap"
+           found_pcap=$testdir
+        fi
+    done
+    if test "$found_pcap" = "no"; then
+        AC_ERROR([Error: You decided to use PCAP (default) for capturing. Please install libpcap-dev.]) 
+    else
+        CFLAGS="$CFLAGS -D_CAPTURE_USE_PCAP_"
+        AC_MSG_RESULT($found_pcap)
+    fi
+    
+    AC_CHECK_PROG(iptables_found, ip6tables, [yes], [no])
+    if test $iptables_found = "no"; then
+	    if ! test -f "/sbin/ip6tables" ; then
+                AC_ERROR([The ip6tables program is required to set up the netfilter queue. Please install ip6tables.])
+	    fi
+    fi
+fi
+
+
+dnl #####################################################
+dnl Enable the debugging
+dnl #####################################################
+
+debug_enable=no
+AC_ARG_ENABLE(debug, [--enable-debug		enable use of extra debugging information [default=no]],debug_enable=yes)
+AC_MSG_CHECKING([for -g during building])
+if test "$debug_enable" = "yes"; then
+	CFLAGS="$CFLAGS -g"
+	AC_MSG_RESULT([Extra debugging information activated.])
+else
+	AC_MSG_RESULT([Extra debugging information NOT activated.])
+fi
+
+
+dnl #####################################################
+dnl Enable Syslog filtering
+dnl #####################################################
+
+
+syslog_enable=no
+AC_ARG_ENABLE(syslogfilter, [--enable-syslogfilter		enable syslog filtering/logrotate [default=no]],syslog_enable=yes)
+AC_MSG_CHECKING([for syslog filtering])
+if test "$syslog_enable" = "yes"; then
+	INSTALL_PLUGINS="make -C ./install/rsyslog install ; "
+	UNINSTALL_PLUGINS="make -C ./install/rsyslog uninstall ; "
+	AC_MSG_RESULT([Exporting syslog messages to /var/log/ndpmon.log])
+else
+	AC_MSG_RESULT([Exporting syslog messages to /var/log/syslog])
+fi
+
+
+
+dnl #####################################################
+dnl Enable the mac_resolv plugin
+dnl #####################################################
+AC_ARG_ENABLE(mac-resolv, [--enable-mac-resolv	enable MAC Manufacturer Resolution [default=no]],enable_mac_resolv=yes)
+AC_MSG_CHECKING([for MAC Resolution])
+
+found_manuf=no
+
+if test "$enable_mac_resolv" = "yes"; then
+	PLUGINS="$PLUGINS ../../bin/mac_resolv.o"
+	OPTIONS="$OPTIONS -D_MACRESOLUTION_"
+	AC_MSG_RESULT([MAC Manufacturer Resolution activated.])
+
+	AC_MSG_CHECKING([for Wireshark manuf file])
+	AC_ARG_WITH([manuf], [--with-manuf=DIR	Find wireshark manuf file in DIR], [found_manuf=$withval])
+	for testdir in /usr/share/wireshark/manuf /usr/local/share/wireshark/manuf ; do
+		if test -f "${testdir}" -a $found_manuf = no ; then
+            		found_manuf=$testdir
+        	fi
+	done
+	if test "$found_manuf" = "no"; then
+		AC_ERROR([Error: Please install wireshark.]) 
+	else
+		AC_MSG_RESULT($found_manuf)
+		MANUF=$found_manuf
+	fi
+else
+	AC_MSG_RESULT([MAC Manufacturer Resolution NOT activated.])
+fi
+
+dnl #####################################################
+dnl Enable the countermeasures plugin
+dnl #####################################################
+AC_ARG_ENABLE(countermeasures, [--enable-countermeasures	enable Countermeasures [default=no]],enable_countermeasures=yes)
+AC_MSG_CHECKING([for Countermeasures])
+if test "$enable_countermeasures" = "yes"; then
+	PLUGINS="$PLUGINS ../../bin/countermeasures.o"
+	OPTIONS="$OPTIONS -D_COUNTERMEASURES_"
+	AC_MSG_RESULT([Countermeasures activated.])
+else
+	AC_MSG_RESULT([Countermeasures NOT activated.])
+fi
+
+dnl #####################################################
+dnl Enable the webinterface plugin
+dnl #####################################################
+AC_ARG_ENABLE(webinterface, [--enable-webinterface	enable Web interface [default=no]],enable_webinterface=yes)
+AC_MSG_CHECKING([for Webinterface])
+if test "$enable_webinterface" = "yes"; then
+	AC_MSG_RESULT([Webinterface activated.])
+
+	dnl Where is the WEBDIR
+	found_webdir=no
+	AC_MSG_CHECKING([for Web interface directory])
+	AC_ARG_WITH([webdir], [--with-webdir=DIR	Store Webinterface in DIR/ndpmon], [found_webdir=$withval])
+	if test "$found_webdir" = "no"; then
+		if test -z "$WEBDIR"; then
+			WEBDIR=/usr/local/httpd/htdocs/ndpmon
+		fi
+	else
+		WEBDIR="$found_webdir/ndpmon"
+	fi
+	AC_MSG_RESULT($WEBDIR)
+
+	PLUGINS="$PLUGINS ../../bin/webinterface.o"
+	INSTALL_PLUGINS="$INSTALL_PLUGINS mkdir -p $WEBDIR; cp -r ./src/plugins/webinterface/install/* $WEBDIR; ln -s $CONFDIR/ndpmon/config_ndpmon.xml $WEBDIR;"
+	UNINSTALL_PLUGINS="$UNINSTALL_PLUGINS rm -rf $WEBDIR;"
+	OPTIONS="$OPTIONS -D_WEBINTERFACE_"
+else
+	AC_MSG_RESULT([Webinterface NOT activated.])
+fi
+
+dnl #####################################################
+dnl Enable the rules plugin
+dnl #####################################################
+AC_ARG_ENABLE(rules, [--enable-rules	enable Rules [default=no]],enable_rules=yes)
+AC_MSG_CHECKING([for Rules])
+if test "$enable_rules" = "yes"; then
+	PLUGINS="$PLUGINS ../../bin/rules.o"
+	OPTIONS="$OPTIONS -D_RULES_"
+	AC_MSG_RESULT([Rules activated.])
+else
+	AC_MSG_RESULT([Rules NOT activated.])
+fi
+
+dnl #####################################################
+dnl Enable the soap plugin
+dnl #####################################################
+AC_ARG_ENABLE(soap, [--enable-soap	enable Soap [default=no]],enable_soap=yes)
+AC_MSG_CHECKING([for SOAP])
+if test "$enable_soap" = "yes"; then
+    CFLAGS="$CFLAGS -I/usr/include/nanohttp-1.0 -I/usr/include/libcsoap-1.0 -L/usr/lib -lxml2 -lnanohttp -lcsoap"
+	PLUGINS="$PLUGINS ../../bin/soap.o"
+	OPTIONS="$OPTIONS -D_SOAP_"
+	AC_MSG_RESULT([Soap activated.])
+else
+	AC_MSG_RESULT([Soap NOT activated.])
+fi
+
+
+dnl #####################################################
+dnl Checks for libcsoap-1.0-dev
+dnl #####################################################
+
+found_soap=no
+soap_dir=/usr/local
+
+AC_ARG_WITH([soap], [--with-soap=DIR	Use libcsoap in DIR], [soap_dir=$withval])
+
+if test "$enable_soap" = "yes"; then
+    AC_MSG_CHECKING([for libcsoap])
+    for testdir in $soap_dir /usr/local /usr ; do
+        if test -x "${testdir}/include/libcsoap-1.0" -a $found_soap = no ; then
+            found_soap=$testdir
+        fi
+    done
+    if test "$found_soap" = "no"; then
+        AC_ERROR([Error: Please install libcsoap-dev.]) 
+    else
+	AC_MSG_RESULT($found_soap)
+    fi
+fi
+
+
+dnl #####################################################
+dnl Checks for libnanohttp-dev
+dnl #####################################################
+
+found_nanohttp=no
+nanohttp_dir=/usr/local
+
+AC_ARG_WITH([nanohttp], [--with-nanohttp=DIR	Use libcnanohttp in DIR], [nanohttp_dir=$withval])
+
+if test "$enable_soap" = "yes"; then
+    AC_MSG_CHECKING([for libnanohttp])
+    for testdir in $nanohttp_dir /usr/local /usr ; do
+        if test -x "${testdir}/include/nanohttp-1.0" -a $found_nanohttp = no ; then
+            found_nanohttp=$testdir
+        fi
+    done
+    if test "$found_nanohttp" = "no"; then
+        AC_ERROR([Error: Please install libnanohttp-dev.]) 
+    else
+	AC_MSG_RESULT($found_nanohttp)
+    fi
+fi
+
+dnl #####################################################
+dnl Checks for the 'mail' program
+dnl #####################################################
+
+AC_CHECK_PROG(mail_found, mail, [yes], [no])
+
+if test $mail_found = "no"; then
+    AC_ERROR([The mail program is required to send NDPMon alerts. Please install bsd-mailx, or mailutils or a package containing /usr/bin/mail.])
+fi
+
+
+dnl #####################################################
+dnl            -- Conditional libraries --
+dnl #####################################################
+
+dnl #####################################################
+dnl Checks for libpcap
+dnl #####################################################
+
+dnl if test "$found_pcap" = "no" -a "$enable_lnfq" != "yes" ; then
+dnl   AC_ERROR(Error: You decided to use PCAP (default) for capturing. Please install libpcap-dev) 
+dnl fi
+dnl if test "$found_pcap" != "no" -a "$enable_lnfq" != "yes"; then
+dnl        CFLAGS="$CFLAGS -D_CAPTURE_USE_PCAP_"
+dnl        AC_MSG_RESULT(Capture library PCAP will be used, found in: $found_pcap)
+dnl fi
+dnl if test "$found_pcap" != "no" -a "$enable_lnfq" = "yes"; then
+dnl    AC_MSG_RESULT(Capture library PCAP found in $found_pcap (anyway, using LIBNETFILTER_QUEUE instead).)
+dnl fi
+
+dnl #####################################################
+dnl Checks for libnetfilter_queue
+dnl #####################################################
+
+dnl if test "$found_lnfq" = "no" -a "$enable_lnfq" = "yes" ; then
+dnl    AC_ERROR(Error: You decided to use LIBNETFILTER_QUEUE for capturing. Please install libnetfilter_queue-dev) 
+dnl fi
+dnl if test "$found_lnfq" != "no" -a "$enable_lnfq" = "yes"; then
+dnl    CFLAGS="$CFLAGS -D_CAPTURE_USE_LNFQ_"
+dnl    AC_MSG_RESULT(Capture library LIBNETFILTER_QUEUE will be used, found in: $found_lnfq)
+dnl fi
+dnl if test "$found_lnfq" != "no" -a "$enable_lnfq" != "yes"; then
+dnl    AC_MSG_RESULT(Capture library LIBNETFILTER_QUEUE found in $found_lnfq (anyway, using PCAP instead).)
+dnl fi
+
+
+
+AC_HEADER_STDC
+AC_HAVE_HEADERS(stdlib.h errno.h signal.h stdio.h string.h sys/stat.h sys/wait.h unistd.h syslog.h) 
+AC_HAVE_HEADERS(stdio.h time.h netinet/in.h netinet/ether.h  netinet/ip6.h netinet/icmp6.h pcap.h time.h arpa/inet.h)
+dnl AC_HAVE_HEADERS(libxml/parser.h libxml/tree.h libxml/xpath.h libxml/encoding.h libxml/xmlwriter.h)
+AC_CHECK_FUNCS(getaddrinfo socket ntohs inet_pton inet_ntop,,AC_MSG_ERROR([Required standard library function missing]))
+
+AC_SUBST(CFLAGS)
+AC_SUBST(LIBS)
+AC_SUBST(PLUGINS)
+AC_SUBST(OPTIONS)
+AC_SUBST(MAKE_PLUGINS)
+AC_SUBST(INSTALL_PLUGINS)
+AC_SUBST(UNINSTALL_PLUGINS)
+AC_SUBST(VARDATADIR)
+AC_SUBST(CONFDIR)
+AC_SUBST(MANDIR)
+AC_SUBST(WEBDIR)
+AC_SUBST(MANUF)
+AC_SUBST(SYSLOGFILTERING)
+dnl read Makefile.in and write Makefile
+AC_OUTPUT([Makefile ./install/ndpmon.sh src/plugins/Makefile src/ndpmon_defs.h ./install/config_ndpmon.xml ./install/neighbor_list.xml ./install/alerts_to_xml.py ./install/ndpmon.8])

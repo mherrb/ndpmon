@@ -1,0 +1,14 @@
+/var/log/ndpmon.log
+{
+	rotate 52	# Keep 52 weeks worth of log
+	weekly		# Rotate files weekly
+	missingok	# Missing log file is not abnormal
+	notifempty	# do not rotate if empty
+	compress	# compress rotated files
+	delaycompress	# but not rightaway to avoid crashing 
+			# the program writing in the rotated file
+	sharedscripts	# run postrotate once per rotation
+	postrotate	# the script to be executed at rotation
+		invoke-rc.d rsyslog reload >/dev/null 2>&1 || true
+	endscript
+}

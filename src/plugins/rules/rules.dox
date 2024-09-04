@@ -1,0 +1,99 @@
+/* This file contains additional source documentation.
+*/
+
+/**
+@page rules Rules Plugin
+
+The rules plugin lets the user define custom rules for raising alerts.
+Those rules include one or more matches that can be used to check the value of
+predefined packet fields. Some of the fields defined do not expect a value, they
+just check for occurences of Neighbor Discovery options. Some of them are also
+a shortcut to check the ICMPv6 type of a message.
+
+See also rules.h, rules_matches.h and rules_types.h.
+
+@section rules_configuration Configuration
+
+@verbatim
+    <rule description="<describe the purpose of this rule>">
+        <match field="<field name>" value="<field value, if any>" />
+        <!-- you may define multiple matches... -->
+        <!-- there is also a negative match type 
+             to express that a condition shall not apply to the packet
+          -->
+        <no-match field="<field name>" value="<field value, if any>" />
+    </rule>
+@endverbatim
+
+@section rules_fields Fields
+
+Fields may have one of the following types:
+<TABLE>
+    <TR>
+        <TH>Type</TH>
+        <TH>Description</TH>
+    </TR>
+    <TR>
+        <TD>ethernet address</TD>
+        <TD>IEEE 802.3 MAC address, e.g. FF:FF:FF:FF:FF:FF</TD>
+    </TR>
+    <TR>
+        <TD>ipv6 address</TD>
+        <TD>IPv6 address, may also be expressed in prefix notation. For instance fe80::/10</TD>
+    </TR>
+    <TR>
+        <TD>uint8 / uint16 / uint32</TD>
+        <TD>Unsigned 8-bit/16-bit/32-bit integer value.</TD>
+    </TR>
+</TABLE>
+
+The following fields can be matched in rules:
+
+<TABLE>
+    <TR>
+        <TH>Field name</TH>
+        <TH>Type</TH>
+    </TR>
+<TR><TD>ethernet.source</TD>     <TD>ethernet address</TD></TR>
+<TR><TD>ethernet.destination</TD><TD>ethernet address</TD></TR>
+<TR><TD>inet6.source</TD><TD>ipv6 address</TD></TR>
+<TR><TD>inet6.destination</TD><TD>ipv6 address</TD></TR>
+<TR><TD>inet6.payload</TD>    <TD>uint16</TD></TR>
+<TR><TD>inet6.nextheader</TD> <TD>uint8</TD></TR>
+<TR><TD>inet6.hoplimit</TD>   <TD>uint8</TD></TR>
+<TR><TD>icmp6.type</TD>       <TD>uint8</TD></TR>
+<TR><TD>icmp6.code</TD>       <TD>uint8</TD></TR>
+<TR><TD>nd.rs</TD><TD>no value expected</TD></TR>
+<TR><TD>nd.ra</TD><TD>no value expected</TD></TR>
+<TR><TD>nd.ns</TD><TD>no value expected</TD></TR>
+<TR><TD>nd.na</TD><TD>no value expected</TD></TR>
+<TR><TD>nd.rd</TD><TD>no value expected</TD></TR>
+<TR><TD>nd.ra.curhoplimit</TD>   <TD>uint8</TD></TR>
+<TR><TD>nd.ra.flag.managed</TD>  <TD>no value expected</TD></TR>
+<TR><TD>nd.ra.flag.other</TD>    <TD>no value expected</TD></TR>
+<TR><TD>nd.ra.flag.homeagent</TD><TD>no value expected</TD></TR>
+<TR><TD>nd.ra.lifetime</TD>      <TD>uint16</TD></TR>
+<TR><TD>nd.ra.reachabletimer</TD><TD>uint32</TD></TR>
+<TR><TD>nd.ra.retranstimer</TD>  <TD>uint32</TD></TR>
+<TR><TD>nd.ns.targetaddress</TD> <TD>ipv6 address</TD></TR>
+<TR><TD>nd.na.flag.router</TD>   <TD>no value expected</TD></TR>
+<TR><TD>nd.na.flag.solicited</TD><TD>no value expected</TD></TR>
+<TR><TD>nd.na.flag.override</TD> <TD>no value expected</TD></TR>
+<TR><TD>nd.na.targetaddress</TD> <TD>ipv6 address</TD></TR>
+<TR><TD>nd.rd.targetaddress</TD> <TD>ipv6 address</TD></TR>
+<TR><TD>nd.rd.destinationaddress</TD><TD>ipv6 address</TD></TR>
+<TR><TD>nd.opt.sourcelinklayer</TD> <TD>no value expected</TD></TR>
+<TR><TD>nd.opt.targetlinklayer</TD> <TD>no value expected</TD></TR>
+<TR><TD>nd.opt.prefixinfo</TD>      <TD>no value expected</TD></TR>
+<TR><TD>nd.opt.mtu</TD>             <TD>no value expected</TD></TR>
+<TR><TD>nd.opt.sourcelinklayer.address</TD><TD>ethernet address</TD></TR>
+<TR><TD>nd.opt.targetlinklayer.address</TD><TD>ethernet address</TD></TR>
+<TR><TD>nd.opt.prefixinfo.flag.onlink</TD>       <TD>no value expected</TD></TR>
+<TR><TD>nd.opt.prefixinfo.flag.autoconf</TD>     <TD>no value expected</TD></TR>
+<TR><TD>nd.opt.prefixinfo.validlifetime</TD>     <TD>uint32</TD></TR>
+<TR><TD>nd.opt.prefixinfo.preferredlifetime</TD> <TD>uint32</TD></TR>
+<TR><TD>nd.opt.prefixinfo.prefix</TD>            <TD>ipv6 address</TD></TR>
+<TR><TD>nd.opt.mtu.mtu</TD>                      <TD>uint32</TD></TR>
+</TABLE>
+
+*/

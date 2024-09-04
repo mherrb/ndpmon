@@ -1,0 +1,13 @@
+/var/log/ndpmon.log
+{
+	rotate 52
+	weekly
+	missingok
+	notifempty
+	compress
+	delaycompress
+	sharedscripts
+	postrotate
+		invoke-rc.d rsyslog reload >/dev/null 2>&1 || true
+	endscript
+}

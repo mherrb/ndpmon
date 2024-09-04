@@ -1,0 +1,104 @@
+#ifndef _NDPMON_DEFS_
+#define _NDPMON_DEFS_ 1
+
+#ifdef _MACRESOLUTION_
+#include "./plugins/mac_resolv/mac_resolv.h"
+#endif
+
+#define _ALERTS_PATH_ "@VARDATADIR@/ndpmon/alerts.xml"
+#define _CONFIG_PATH_ "@CONFDIR@/ndpmon/config_ndpmon.xml"
+#define _CONFIG_DTD_PATH_ "@CONFDIR@/ndpmon/config_ndpmon.dtd"
+#define _CACHE_PATH_ "@VARDATADIR@/ndpmon/neighbor_list.xml"
+#define _CACHE_DTD_PATH_ "@VARDATADIR@/ndpmon/neighbor_list.dtd"
+/* #define _DISCOVERY_HISTORY_PATH_ "@VARDATADIR@/ndpmon/discovery_history.dat" */
+#define _DISCOVERY_HISTORY_PATH_ "@VARDATADIR@/ndpmon/"
+#define _MANUF_PATH_ "@prefix@/lib/ndpmon/src/plugins/mac_resolv/manuf"
+#ifdef _WEBINTERFACE_
+#define _WEBINTERFACE_PATH_ "@WEBDIR@"
+#endif
+
+/* Already set in BSD */
+#ifdef _LINUX_
+#define ETHERTYPE_IPV6 0x86dd
+#endif
+
+#define IN6_ARE_PRE_EQUAL(a,b) \
+	((((__const uint32_t *) (a))[0] == ((__const uint32_t *) (b))[0])     \
+	 && (((__const uint32_t *) (a))[1] == ((__const uint32_t *) (b))[1])  \
+	 )
+
+#define MEMCMP(a, b, n) memcmp((char *)a, (char *)b, n)
+#define STRCMP(a, b) strcmp((char *)a, (char *)b)
+#define STRNCMP(a, b, n) strncmp((const char *)a, (const char *)b, n)
+#define DAY_TIME 86400
+
+#define IN6_IS_ADDR_EUI64(a) \
+	(((a->s6_addr16[5] & 0xff00) == 0xff00) && \
+	 ((a->s6_addr16[6] & 0x00fe) == 0x00fe) && \
+	 !IN6_IS_ADDR_MULTICAST(a))
+
+/* RFC 2526 */
+#define IN6_IS_ADDR_SUBNET_RESERVED_ANYCAST(a) \
+	(((a->s6_addr16[4] == 0xfffd) && \
+	  (a->s6_addr16[5] == 0xffff) && \
+	  (a->s6_addr16[6] == 0xffff) && \
+	  ((a->s6_addr16[7] & 0x80ff) == 0x80ff)) || \
+	 ((a->s6_addr16[4] == 0xffff) && \
+	  (a->s6_addr16[5] == 0xffff) && \
+	  (a->s6_addr16[6] == 0xffff) && \
+	  ((a->s6_addr16[7] & 0x80ff) == 0x80ff)))
+
+/* RFC 2526 */
+#define IN6_IS_ADDR_SUBNET_ROUTER_ANYCAST(a) \
+	((a->s6_addr16[4] == 0) && \
+	 (a->s6_addr16[5] == 0) && \
+	 (a->s6_addr16[6] == 0) && \
+	 (a->s6_addr16[7] == 0))
+
+/* 
+ * is anycast is it is any of the 2 reserved anycast addresses 
+ * other anycast addresses cannot be distinguished
+ * */
+#define IN6_IS_ADDR_ANYCAST(a) \
+	(IN6_IS_ADDR_SUBNET_ROUTER_ANYCAST(a) || \
+	 IN6_IS_ADDR_SUBNET_RESERVED_ANYCAST(a))
+
+/* RFC6106 */
+/* resolv.conf(5)
+ * "Up to MAXNS (currently 3, see <resolv.h>) name servers may be listed,"
+ * "The search list is currently limited to six domains with a total of 256 characters."
+ **/
+#define MAXNS 3
+#define MAX_DOMAINLEN 256
+#define MAX_DOMAINS 6
+/* RFC6106 */
+
+
+extern int DEBUG;
+extern int learning;
+
+extern struct neighbor_list *neighbors;
+extern struct router_list *routers;
+
+extern char admin_mail[128];
+extern char syslog_facility[16];
+extern int ignor_autoconf;
+
+extern char alerts_path[128];
+extern char config_path[128];
+extern char cache_path[128];
+extern char dtd_path[128];
+extern char dtd_config_path[128];
+extern char discovery_history_path[128];
+
+extern int use_reverse_hostlookups;
+struct action_selector {int sendmail; int syslog; char* exec_pipe_program;};
+extern struct action_selector action_low_pri, action_high_pri;
+  
+typedef struct capture_descriptor* capture_handle_t;
+    
+#ifdef _MACRESOLUTION_
+extern manufacturer_t *manuf;
+#endif
+
+#endif

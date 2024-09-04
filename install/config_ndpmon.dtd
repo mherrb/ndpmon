@@ -1,0 +1,118 @@
+<!ELEMENT config_ndpmon (settings, probes, countermeasures?)>
+
+<!ELEMENT probes (probe*)>
+
+<!ELEMENT probe (countermeasures_enabled?, routers?, rules?)>
+<!ATTLIST probe
+    name CDATA #REQUIRED
+    type CDATA #REQUIRED
+>
+<!ELEMENT countermeasures_enabled (#PCDATA)>
+
+<!ELEMENT settings (actions_high_priority, actions_low_priority, admin_mail, ignor_autoconf, syslog_facility, use_reverse_hostlookups, soap?)>
+<!ELEMENT soap EMPTY>
+<!ATTLIST soap
+    report_url CDATA #IMPLIED
+    report_src CDATA #IMPLIED
+    listen_path CDATA #IMPLIED
+    listen_port CDATA #IMPLIED
+    ssl_certfile CDATA #IMPLIED
+    ssl_certpass CDATA #IMPLIED
+    ssl_cafile CDATA #IMPLIED
+    ssl_commonname CDATA #IMPLIED
+    ssl_enabled CDATA #REQUIRED
+>
+<!ELEMENT ignor_autoconf (#PCDATA)>
+<!ELEMENT syslog_facility (#PCDATA)>
+<!ELEMENT admin_mail (#PCDATA)>
+
+<!ELEMENT actions_low_priority EMPTY>
+<!ATTLIST actions_low_priority
+    sendmail          CDATA #REQUIRED
+    syslog            CDATA #REQUIRED
+    exec_pipe_program CDATA #REQUIRED
+>
+<!ELEMENT actions_high_priority EMPTY>
+<!ATTLIST actions_high_priority
+    sendmail          CDATA #REQUIRED
+    syslog            CDATA #REQUIRED
+    exec_pipe_program CDATA #REQUIRED
+>
+<!ELEMENT sendmail (#PCDATA)>
+<!ELEMENT syslog (#PCDATA)>
+<!ELEMENT exec_pipe_program (#PCDATA)>
+
+<!ELEMENT use_reverse_hostlookups (#PCDATA)>
+<!ELEMENT routers (router*)>
+<!ELEMENT router (
+    mac, lla,
+    param_curhoplimit?,
+    param_flags_reserved?,
+    param_router_lifetime?,
+    param_reachable_timer?,
+    param_retrans_timer?,
+    param_mtu?,
+    params_volatile?,
+    addresses,
+    prefixes,
+    rdnss?,
+    dnssl?,
+    routes?
+)>
+
+<!ELEMENT mac (#PCDATA)>
+<!ELEMENT lla (#PCDATA)>
+<!ELEMENT param_curhoplimit (#PCDATA)>
+<!ELEMENT param_flags_reserved (#PCDATA)>
+<!ELEMENT param_router_lifetime (#PCDATA)>
+<!ELEMENT param_reachable_timer (#PCDATA)>
+<!ELEMENT param_retrans_timer (#PCDATA)>
+<!ELEMENT param_mtu (#PCDATA)>
+<!ELEMENT params_volatile (#PCDATA)>
+
+<!ELEMENT prefixes (prefix*)>
+<!ELEMENT prefix (address, mask, param_flags_reserved?, param_valid_time?, param_preferred_time?)>
+<!ELEMENT mask (#PCDATA)>
+<!ELEMENT param_valid_time (#PCDATA)>
+<!ELEMENT param_preferred_time (#PCDATA)>
+
+<!ELEMENT addresses (address*)>
+<!ELEMENT address (#PCDATA)>
+
+<!ELEMENT rdnss (nameserver+)>
+<!ELEMENT nameserver (#PCDATA)>
+<!ATTLIST nameserver lifetime CDATA #REQUIRED>
+
+<!ELEMENT dnssl (domain+)>
+<!ELEMENT domain (#PCDATA)>
+<!ATTLIST domain lifetime CDATA #REQUIRED>
+
+<!ELEMENT routes (route*)>
+<!ELEMENT route (address, mask, param_pref_reserved, lifetime)>
+<!ELEMENT param_pref_reserved (#PCDATA)>
+<!ELEMENT lifetime (#PCDATA)>
+
+<!ELEMENT countermeasures (kill_illegitimate_router?, kill_wrong_prefix?, propagate_router_params?, propagate_router_dns?, propagate_router_routes?, propagate_neighbor_mac?, indicate_ndpmon_presence?)>
+<!ELEMENT kill_illegitimate_router (#PCDATA)>
+<!ELEMENT kill_wrong_prefix (#PCDATA)>
+<!ELEMENT propagate_router_params (#PCDATA)>
+<!ELEMENT propagate_router_dns (#PCDATA)>
+<!ELEMENT propagate_router_routes (#PCDATA)>
+<!ELEMENT propagate_neighbor_mac (#PCDATA)>
+<!ELEMENT indicate_ndpmon_presence (#PCDATA)>
+
+<!ELEMENT rules (rule*)>
+<!ELEMENT rule (no-match*, match*)>
+<!ATTLIST rule
+    description CDATA #REQUIRED
+>
+<!ELEMENT no-match EMPTY>
+<!ATTLIST no-match
+    field CDATA #REQUIRED
+    value CDATA #IMPLIED
+>
+<!ELEMENT match EMPTY>
+<!ATTLIST match
+    field CDATA #REQUIRED
+    value CDATA #IMPLIED
+>

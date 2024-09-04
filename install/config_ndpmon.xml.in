@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE config_ndpmon SYSTEM "config_ndpmon.dtd">
+<?xml-stylesheet type="text/xsl" href="config.xsl" ?>
+<config_ndpmon>
+  <settings>
+    <!-- 
+    <actions_high_priority sendmail="1" syslog="1" exec_pipe_program="@prefix@/ndpmon/alerts_to_xml.py"/>
+    <actions_low_priority sendmail="1" syslog="1" exec_pipe_program="@prefix@/ndpmon/alerts_to_xml.py"/>
+    -->
+    <actions_high_priority sendmail="0" syslog="1" exec_pipe_program=""/>
+    <actions_low_priority sendmail="0" syslog="1" exec_pipe_program=""/>
+    <admin_mail>root@localhost</admin_mail>
+    <ignor_autoconf>1</ignor_autoconf>
+    <syslog_facility>LOG_LOCAL1</syslog_facility>
+    <use_reverse_hostlookups>0</use_reverse_hostlookups>
+    <!-- Example soap configuration
+    <soap report_url="https://localhost:10002/ndpmon"
+          report_src="localhost"
+          listen_path="/ndpmon"
+          listen_port="10002"
+          ssl_enabled="1"
+          ssl_certfile="/usr/local/etc/ndpmon/sslkey.pem"
+          ssl_certpass="pass"
+          ssl_cafile="/usr/local/etc/ndpmon/ca/cacert.pem"
+          ssl_commonname="test" />
+    -->       
+  </settings>
+  <probes>
+  <!-- Example remote probe
+  <probe name="somehost/eth0" type="remote" />
+  -->
+  <probe name="eth0" type="interface">
+    <!-- To enable (default, 1) / disable (0) countermeasures for that probe
+    <countermeasures_enabled>1<countermeasures_enabled>
+    -->
+  <routers>
+  <!--Example router definition
+    <router>
+      <mac>0:11:22:33:44:55</mac>
+      <lla>fe80::211:22ff:fe33:4455</lla>
+      <param_curhoplimit>64</param_curhoplimit>
+      <param_flags_reserved>0</param_flags_reserved>
+      <param_router_lifetime>10800</param_router_lifetime>
+      <param_reachable_timer>0</param_reachable_timer>
+      <param_retrans_timer>0</param_retrans_timer>
+      <param_mtu>0</param_mtu>
+      <params_volatile>1</params_volatile>
+      <addresses/>
+      <prefixes>
+        <prefix>
+          <address>2001:db8:1234:5678::</address>
+          <mask>64</mask>
+          <param_flags_reserved>224</param_flags_reserved>
+          <param_valid_time>2592000</param_valid_time>
+          <param_preferred_time>604800</param_preferred_time>
+        </prefix>
+      </prefixes>
+      <rdnss>
+		<nameserver lifetime="900">2001:db8:1234:5678::53</nameserver>
+      </rdnss>
+      <dnssl>
+		<domain lifetime="900">localhost.localdomain</domain>
+      </dnssl>
+      <routes>
+	<route>
+	  <address>2001:db8:abcd:ef01::</address>
+          <mask>64</mask>
+	  <param_pref_reserved>8</param_flags_reserved>
+	  <lifetime>2592000</lifetime>
+	</route>
+      </routes>
+    </router>
+  -->
+  </routers>
+  <!-- Example Rules Configuration 
+  <rules>
+    <rule description="inet6.source is link local">
+      <match field="inet6.source" value="fe80::/10"/>
+    </rule>
+  </rules>
+  -->
+  </probe>
+  </probes>
+  <!-- Example of countermeasures configuration
+      (If no configuration is present, all countermeasures will be suppressed.)
+  <countermeasures>
+      <kill_illegitimate_router>RESPOND</kill_illegitimate_router>
+      <kill_wrong_prefix>LAUNCH AFTER 10</kill_wrong_prefix>
+      <propagate_router_params>CEASE AFTER 10</propagate_router_params>
+      <propagate_router_dns>RESPOND</propagate_router_dns>
+      <propagate_router_routes>RESPOND</propagate_router_routes>
+      <propagate_neighbor_mac>RESPOND</propagate_neighbor_mac>
+      <indicate_ndpmon_presence>SUPPRESS</indicate_ndpmon_presence>
+  </countermeasures>
+  -->
+
+</config_ndpmon>

@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="description" content="#" />
+<meta name="keywords" content="#" />
+<meta name="author" content="#" />
+<link rel="stylesheet" type="text/css" href="doctors_office.css" media="screen" />
+<title>NDPMon - Neighbor Discovery Protocol MONitor</title>
+</head>
+<body>
+<div id="banner">
+  <div class="top_links clearfix" id="topnav">
+    <ul>
+      <li><a href="http://ndpmon.sf.net">Official Website</a></li>
+	 <li><a href="https://sourceforge.net/projects/ndpmon/">SourceForge Project Page</a></li>
+    </ul>
+  </div>
+  <img alt="pumpkin" src="img/header_logo.gif" />
+  <div class="page_title"><span id="page_title">NDPMon - IPv6 Neighbor Discovery Protocol MONitor</span></div>
+</div>
+<div class="leftcontent" id="nav"> <img alt="bg image" src="img/left_bg_top.gif" />
+  <ul>
+    <li><a href="./index.html">About</a></li>
+    <li><a href="./config_ndpmon.xml">Configuration</a></li>
+    <li><a href="./alerts.html">Alerts and Reports</a></li>
+    <li><a href="./neighbors.html">Neighbors</a></li>
+<!--    <li><a href="./contact.html">Contact</a></li>-->
+<!--    <li><a href="./stats.html">Statistics</a></li>-->
+  </ul>
+ <!--
+  <div class="left_news">
+    <p>&nbsp;</p>
+    <p><span class="news_title">News Area?</span><br />
+      A little area for some news, links or perhaps a profile?</p>
+    <p><span class="news_title">Note About Above Links</span><br />
+	The left navigation links above show a small blue box on hover, at least they show up in anything other than IE (of course).</p>
+	
+	<p>The other browsers show them alright, except that there was a small lag in Opera, but the image showed up fine after that.</p>
+	
+	<p>It's not a huge deal, but i wanted to note it anyway. </p>
+  </div>
+ -->
+</div>
+<div id="centercontent">
+  <p><span class="squares"><span>&#8250;&#8250;</span></span> <span class="news_title_grn">What is NDPMon ?</span></p>
+	<p>NDPMon is an equivalent of <a href="http://ee.lbl.gov/">ArpWatch</a> for IPv6 and was developped within the <a href="http://madynes.loria.fr">MADYNES Project</a>, a research team from the <a href="http://www.inria.fr">Inria Nancy Grand Est</a> Research center in France. It is currently maintained by Frederic Beck.</p>
+
+	<p>NDPMon, Neighbor Discovery Protocol Monitor, is a tool working with ICMPv6 packets. NDPMon observes the local network to see if nodes using neighbor discovery messages behave properly. When it detects a suspicious Neighbor Discovery message, it notifies the administrator by writing in the syslog and in some cases by sending an email report.</p>
+
+	<p>Please refer to the <a href="http://ndpmon.sf.net" target=blank>website</a> for more information and documentation.</p>
+
+	<p><span class="squares"><span>&#8250;&#8250;</span></span> <span class="news_title_grn">Plugins</span></p>
+
+	<p><strong>Available</strong></p>
+  	<ul id="list">
+		<li><i>MAC Vendor Resolution:</i> compares the vendor part of a MAC address with a know base</li>
+		<li><i>WEB interface:</i> caches and alerts are converted to HTML files using XSLT for real time display in a WEB server</li>
+		<li><i>Countermeasures:</i>packets are forged and sent to deprecated rogue RAs or NAs</li>
+		<li><i>Syslog filtering:</i>logrotate and logs redirection to /var/log/ndpmon.log</li>
+	</ul>
+
+	<p><strong>Experimental</strong></p>
+  	<ul id="list">
+		<li><i>Remote probes:</i>distributed monitoring and logging to a central instance using SOAP/TLS</li>
+		<li><i>Custom rules:</i>lets the user define its own rules for raising alerts</li>
+	</ul>
+	
+  <p><span class="squares"><span>&#8250;&#8250;</span></span> <span class="news_title_grn">Alerts and Reports</span></p>
+  
+  <p>NDPMon generates various reports and alerts, including:</p>
+  	<ul id="list">
+		<li><i>wrong couple MAC/IP:</i> the MAC address is valid, so is the IP address, but not both of them together</li>
+		<li><i>wrong router MAC:</i> invalid MAC address</li>
+		<li><i>wrong router IP address:</i> invalid IP address</li>
+		<li><i>wrong prefix:</i> invalid IPv6 prefix</li>
+		<li><i>wrong RA flags:</i> invalid flags in the RA</li>
+		<li><i>wrong RA params:</i> wrong paameter in the RA (lifetimes, timers...)</li>
+		<li><i>wrong router redirect:</i> the router which emitted the redirect is not valid</li>
+		<li><i>router flag in Neighbor Advertisement:</i> a node not declared as a router announced itself as one</li>
+		<li><i>Duplicate Address Detection DOS:</i> duplicate address detection denial of service</li>
+		<li><i>changed ethernet address:</i> a Global IPv6 address has a new MAC address</li>
+		<li><i>flip flop:</i> a node uses two MAC addresses one after the other</li>
+		<li><i>reused old Ethernet address:</i> reuse of an old MAC address</li>
+		<li><i>Unknown MAC Manufacturer:</i> MAC vendor unknown, might be a forged one</li>
+		<li><i>new station:</i> new node on the link</li>
+		<li><i>new IPv6 Global Address:</i> new IPv6 Global address for a node</li>
+		<li><i>new IPv6 Link Local Address:</i> new IPv6 Link Local address for a node</li>
+		<li><i>wrong couple MAC/LLA in icmp6:</i> wrong couple source Ethernet and source LLA addresses, i.e. Ethernet and Link Local Addresses are found but in different neighbors</li>
+		<li><i>Ethernet mismatch:</i> link layer Ethernet address and address in ICMPv6 option do not match</li>
+		<li><i>IP Multicast</i></li>
+		<li><i>Ethernet Broadcast</i></li>
+<!--
+	<p><strong>Un-Ordered List Example</strong></p>
+  	<ul id="list">
+  	<li>List Item</li>
+	<li>List Item
+		<ul>
+		<li class="sub">Sub-List Item</li>
+		<li class="sub">Sub-List Item</li>
+		</ul>
+	</li>
+	<li>List Item</li>
+  	</ul>
+	
+  <p><strong>Blockquote Example</strong></p>
+  <blockquote><p>Just a small bit of text to give you an idea what the style of a blockquote is set to.</p></blockquote>	
+-->	
+	<div class="footer" id="footer">
+	Copyright &copy; 2012 (- <a href="http://madynes.loria.fr">MADYNES Project</a> -)&nbsp;&nbsp;
+	Design by <a href="#">pogy366</a> 
+	</div>
+
+
+</div>
+<!--
+<div id="rightcontent">
+  <div class="right_news">
+    <p><span class="news_title">Some More News?</span><br />
+      Well, what do you know, another area for news, images or maybe a profile.</p>
+    <div class="center">
+      <p><img alt="sample image" src="img/sample.jpg" /></p>
+    </div>
+    <p><span class="news_title">Other Designs</span><br />
+      Chack out <a href="http://www.oswd.org/userinfo.phtml?user=pogy366">my other designs</a> at OSWD.<br />
+	  <a href=""></a></p>
+	<p><span class="news_title">Can I say Something?</span><br /> 
+	The CSS-related bugs in IE can be so frustrating and unending. Please, make the Internet a better place and use Firefox.</p>
+	
+	<p>There, I said it. </p>
+  </div>
+-->
+</div>
+</body>
+</html>

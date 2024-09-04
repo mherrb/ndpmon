@@ -1,0 +1,63 @@
+/* This file contains additional documentation. */
+
+/**
+@page core NDPMon Core
+
+The core contains functions that manage the configuration, the available watch functions or the different events. Those modules are intended to connect the watch functions and the plugins to the vital data structures (neighbor cache, configuration, etc.).
+
+\verbatim
+
++---------------+     +----------------+    +-------------+
+| Configuration |     | Neighbor Cache |    | Event queue |
++---------------+     +----------------+    +-------------+
+       |                      |                     |
+       +----------------------+---------------------+-------- ....
+                              |
+                      +----------------+
+              +---->  | CORE Interface |    <---+
+              |       +----------------+        |
+              |                                 |
+              |                                 |
+     +-----------------+                    +---------+
+     | Watch Functions |                    | Plugins |
+     +-----------------+                    +---------+
+
+\endverbatim
+
+Files that belong to the core (and that are already documented) are listed below.
+
+<table>
+<tr><th>File</th><th>Description</th></tr>
+<tr>
+    <td>alerts.h</td>
+    <td>Raises alert events and posts them to syslog, mail or XML.</td>
+</tr>
+<tr>
+    <td>events.h</td>
+    <td>Queueing and handling of events (alert, neighbor update, probe updown).</td>
+</tr>
+<tr>
+    <td>extinfo.h</td>
+    <td>Storing values to core data structures that are not defined in the core but needed by plugins/watchers.</td>
+</tr>
+<tr>
+    <td>neighbors.h</td>
+    <td>Neighbor cache management (managing state information for all neighbor nodes).</td>
+</tr>
+<tr>
+    <td>parser.h</td>
+    <td>Access to the configuration, neighbor cache and alert XML files (only used internally by the core).</td>
+</tr>
+<tr>
+    <td>probes.h</td>
+    <td>Handles the different probes (interface or remote) on which the program is listening.</td>
+</tr>
+<tr>
+    <td>watchers.h</td>
+    <td>Manages the watch functions that are called when a packet is captured.</td>
+</tr>
+</table>
+
+
+
+*/

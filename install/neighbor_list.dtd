@@ -1,0 +1,26 @@
+<!ELEMENT neighbors (probe*)>
+<!ELEMENT probe (address*, neighbor*)>
+<!ATTLIST probe
+    mac CDATA #IMPLIED
+    name CDATA #REQUIRED
+>
+
+<!ELEMENT neighbor (mac, first_mac_seen, lla, lastseen, addresses, old_macs?)>
+
+<!ELEMENT mac (#PCDATA)>
+<!ATTLIST mac vendor CDATA #IMPLIED>
+<!ATTLIST mac last CDATA #IMPLIED>
+<!ELEMENT first_mac_seen (#PCDATA)>
+<!ELEMENT lla (#PCDATA)>
+<!ELEMENT firstseen (#PCDATA)>
+<!ELEMENT lastseen (#PCDATA)>
+<!ATTLIST lastseen lastseenstr CDATA #IMPLIED>
+
+<!ELEMENT addresses (address*)>
+<!ELEMENT address (#PCDATA)>
+<!ATTLIST address firstseen CDATA #IMPLIED>
+<!ATTLIST address firstseenstr CDATA #IMPLIED>
+<!ATTLIST address lastseen CDATA #IMPLIED>
+<!ATTLIST address lastseenstr CDATA #IMPLIED>
+
+<!ELEMENT old_macs (mac*)>

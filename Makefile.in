@@ -1,0 +1,200 @@
+OBJ=./bin/ndpmon.o ./bin/extensions.o ./bin/alerts.o ./bin/monitoring.o ./bin/monitoring_ra.o ./bin/monitoring_na.o ./bin/monitoring_ns.o \
+	./bin/monitoring_rd.o ./bin/print_packet_info.o  ./bin/settings.o ./bin/routers.o ./bin/neighbors.o ./bin/parser.o ./bin/watchers.o ./bin/capture.o \
+	./bin/capture_pcap.o ./bin/capture_lnfq.o ./bin/extinfo.o ./bin/probes.o ./bin/events.o
+#FLAGS=-Wall -pedantic -lpthread @CFLAGS@ @OPTIONS@
+FLAGS=-Wall -pedantic @CFLAGS@ @OPTIONS@
+#LIB=-lpcap -lxml2
+CC=@CC@
+LIB=@LIBS@
+MAKE_PLUGINS=@MAKE_PLUGINS@
+all: ./bin/ndpmon
+
+prefix=@prefix@/lib
+exec_prefix=@prefix@
+datadir=@datadir@
+confdir=@sysconfdir@
+datadir=@datadir@
+localstatedir=@localstatedir@
+
+INSTALL_DIR=${prefix}/ndpmon
+MAN_DIR=@MANDIR@
+BINARY_DIR=@sbindir@
+confprefix=@CONFDIR@
+CONF_DIR=$(confprefix)/ndpmon
+# By default, ndpmon is installed in /usr/local
+# variable data thus go to /var/local and not /usr/local/share
+#DATA_DIR=${datadir}/ndpmon
+dataprefix=@VARDATADIR@
+DATA_DIR=$(dataprefix)/ndpmon
+WEBDIR=@WEBDIR@
+INSTALL_PLUGINS=@INSTALL_PLUGINS@
+UNINSTALL_PLUGINS=@UNINSTALL_PLUGINS@
+SYSLOGFILTERING=@SYSLOGFILTERING@
+
+# ------------------------------
+# Miscellaneous Build Directives
+# ------------------------------
+
+install: ./bin/ndpmon
+	# Copy the source and objects to the INSTALL_DIR
+	mkdir -p $(INSTALL_DIR)
+	cp -r src $(INSTALL_DIR)
+	cp -r doc $(INSTALL_DIR)
+	cp ./install/demopipeprogram.pl.sample $(INSTALL_DIR)
+	cp ./install/alerts_to_xml.py $(INSTALL_DIR)
+	chmod +x $(INSTALL_DIR)/alerts_to_xml.py
+
+	# Copy the XML and DTD of the configuration to the CONF_DIR
+	mkdir -p $(CONF_DIR)
+	cp ./install/config_ndpmon.xml $(CONF_DIR)
+	cp ./install/config_ndpmon.dtd $(CONF_DIR)
+
+	# Copy the XML and DTD of the neighbor cache to the DATA_DIR
+	mkdir -p $(DATA_DIR)
+	cp ./install/neighbor_list.xml $(DATA_DIR)
+	cp ./install/neighbor_list.dtd $(DATA_DIR)
+	cp ./install/alerts.xml $(DATA_DIR)
+	
+	# Copy the manpage to the MAN_DIR
+	mkdir -p $(MAN_DIR)
+	mkdir -p $(MAN_DIR)
+	cp ./install/ndpmon.8 $(MAN_DIR)
+
+	# Copy the binary to BINARY_DIR
+	mkdir -p $(BINARY_DIR)
+	mkdir -p $(BINARY_DIR)
+	cp ./bin/ndpmon $(BINARY_DIR)
+
+	# Linux Specific
+	cp ./install/ndpmon.sh /etc/init.d/ndpmon
+	chmod +x /etc/init.d/ndpmon
+
+	#plugin specific
+	$(INSTALL_PLUGINS)
+
+uninstall:
+	-rm -rf $(INSTALL_DIR)
+	-rm $(MAN_DIR)/ndpmon.8
+	-rm $(BINARY_DIR)/ndpmon
+	echo "Keeping the configuration files in $(CONF_DIR) and the data files in $(DATA_DIR). Use \"make purge\" to remove them."
+	rm /etc/init.d/ndpmon
+
+	$(UNINSTALL_PLUGINS)
+
+purge: uninstall
+	-rm -rf $(CONF_DIR)
+	-rm -rf $(DATA_DIR)
+
+# Put the neighbors list and alerts XMl files to zero
+zero:
+	# Copy the XML and DTD of the neighbor cache to the DATA_DIR
+	cp ./install/neighbor_list.xml $(DATA_DIR)
+	cp ./install/alerts.xml $(DATA_DIR)
+
+clean: 
+	#clean binaries
+	-rm -rf *.o ./bin/ndpmon ./bin/*.o
+	#clean source backups
+	-rm -rf *~ ./install/*~ ./src/*~ ./src/core/*~ ./src/watchers/*~ ./src/capture/*~
+	#clean plugin source backups
+	-rm -rf ./src/plugins/*~ ./src/plugins/mac_resolv/*~ ./src/plugins/rules/*~ ./src/plugins/countermeasures/*~ ./src/plugins/webinterface/*~ ./src/plugins/webinterface/install/*~
+
+clean4svn: clean
+	#clean auto-generated documentation
+	-rm -rf ./doc/html
+	#clean ./configure.log+status
+	-rm -rf ./config.cache ./config.log ./config.status ./autom4te.cache
+	#clean all files that have .in equivalents
+	-rm -rf ./configure ./Makefile ./src/plugins/Makefile ./install/ndpmon.sh ./install/config_ndpmon.xml ./install/neighbor_list.xml ./src/ndpmon_defs.h
+
+doc_generate:
+	doxygen ./doc/Doxyfile
+doc_clean:
+	rm -rf ./doc/html
+
+# -------------------------
+# Building the application:
+# -------------------------
+
+./bin/ndpmon: $(OBJ) make_plugins
+	$(CC) $(FLAGS) ./bin/*.o -o ./bin/ndpmon $(LIB)
+
+./bin/ndpmon.o: ./src/ndpmon.c ./src/ndpmon.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/ndpmon.c  -o ./bin/ndpmon.o
+	
+./bin/extensions.o: ./src/extensions.c ./src/extensions.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/extensions.c  -o ./bin/extensions.o	
+
+# ----
+# Core
+# ----
+
+./bin/alerts.o: ./src/core/alerts.c ./src/core/alerts.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/alerts.c -o ./bin/alerts.o
+
+./bin/capture.o: ./src/core/capture.c ./src/core/capture.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/capture.c -o ./bin/capture.o
+
+./bin/events.o: ./src/core/events.c ./src/core/events.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/events.c -o ./bin/events.o
+	
+./bin/extinfo.o: ./src/core/extinfo.c ./src/core/extinfo.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/extinfo.c -o ./bin/extinfo.o	
+
+./bin/neighbors.o: ./src/core/neighbors.c ./src/core/neighbors.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/neighbors.c -o ./bin/neighbors.o
+
+./bin/parser.o: ./src/core/parser.c
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/parser.c  -o ./bin/parser.o
+
+./bin/print_packet_info.o: ./src/core/print_packet_info.c ./src/core/print_packet_info.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/print_packet_info.c  -o ./bin/print_packet_info.o
+
+./bin/probes.o: ./src/core/probes.c ./src/core/probes.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/probes.c  -o ./bin/probes.o
+
+./bin/settings.o: ./src/core/settings.c ./src/core/settings.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/settings.c -o ./bin/settings.o
+
+./bin/routers.o: ./src/core/routers.c ./src/core/routers.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/core/routers.c -o ./bin/routers.o
+
+./bin/watchers.o: ./src/core/watchers.c ./src/core/watchers.h
+	$(CC) $(FLAGS) -c ./src/core/watchers.c -o ./bin/watchers.o
+
+# -----------------
+# Capture functions
+# -----------------
+
+./bin/capture_pcap.o: ./src/capture/capture_pcap.c ./src/capture/capture_pcap.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/capture/capture_pcap.c -o ./bin/capture_pcap.o
+
+./bin/capture_lnfq.o: ./src/capture/capture_lnfq.c ./src/capture/capture_lnfq.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/capture/capture_lnfq.c -o ./bin/capture_lnfq.o
+
+# ---------------
+# Watch functions
+# ---------------
+
+./bin/monitoring.o: ./src/watchers/monitoring.c ./src/watchers/monitoring.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/watchers/monitoring.c -o ./bin/monitoring.o
+
+./bin/monitoring_ra.o: ./src/watchers/monitoring_ra.c ./src/watchers/monitoring_ra.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/watchers/monitoring_ra.c -o ./bin/monitoring_ra.o
+
+./bin/monitoring_na.o: ./src/watchers/monitoring_na.c ./src/watchers/monitoring_na.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/watchers/monitoring_na.c -o ./bin/monitoring_na.o
+
+./bin/monitoring_ns.o: ./src/watchers/monitoring_ns.c ./src/watchers/monitoring_ns.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/watchers/monitoring_ns.c -o ./bin/monitoring_ns.o
+
+./bin/monitoring_rd.o: ./src/watchers/monitoring_rd.c ./src/watchers/monitoring_rd.h
+	$(CC) $(FLAGS) -c `xml2-config  --cflags` ./src/watchers/monitoring_rd.c -o ./bin/monitoring_rd.o
+
+# -------
+# Plugins
+# -------
+
+make_plugins:
+	# Making plugins
+	$(MAKE_PLUGINS)
