@@ -102,9 +102,7 @@ void* capture_loop(void* unused) {
     return NULL;
 }
 
-void capture_down_all() {
-    struct probe_list** locked_probes;
-    struct probe_list*  tmp_probes;
+void capture_down_all(void) {
 
     if (capture_handle==NULL) {
         return;
