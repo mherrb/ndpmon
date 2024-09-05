@@ -880,14 +880,16 @@ int neighbor_save(xmlNodePtr neighbor_element, const neighbor_list_t* list)
 	char timer_str[TIME_STR_SIZE];
 	xmlNodePtr addresses_element;
 	xmlNodePtr old_macs_element;
-	xmlNodePtr mac_element, lastseen_element;
+	xmlNodePtr lastseen_element;
 	address_t* addresses = list->addresses;
 	ethernet_t* old_macs = list->old_mac;
 	struct extinfo_list* extinfo = list->extinfo;
 
+#ifdef _MACRESOLUTION_
+	xmlNodePtr mac_element;
+
 	mac_element = xmlNewChild(neighbor_element, NULL, BAD_CAST "mac", BAD_CAST ether_ntoa(&list->mac));
 	/* Add the mac vendor element */
-#ifdef _MACRESOLUTION_
 	xmlNewProp(mac_element, BAD_CAST "vendor", BAD_CAST list->vendor);
 #endif
 
