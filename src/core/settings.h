@@ -11,7 +11,7 @@
 #include <libxml/tree.h>
 
 #include "../membounds.h"
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 
 #include "extinfo.h"
 

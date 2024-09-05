@@ -20,7 +20,7 @@
 
 #include <libxml/tree.h>
 
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 #include "../ndpmon_netheaders.h"
 
 #include "cache_types.h"

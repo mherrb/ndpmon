@@ -1,7 +1,7 @@
 #ifndef _CACHE_TYPES_H_
 #define _CACHE_TYPES_H_
 
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 #include "../ndpmon_netheaders.h"
 
 /** Maximum size of a probe name. */

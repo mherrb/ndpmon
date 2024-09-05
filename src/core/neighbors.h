@@ -6,7 +6,7 @@
 */
 
 #include "../membounds.h"
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 
 #include "alerts.h"
 #include "cache_types.h"

@@ -21,7 +21,7 @@
 #include <libxslt/transform.h> /* xsltApplyStylesheet() */
 #include <libxslt/xsltutils.h> /* xsltSaveResultToFilename */
 
-#include "../../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 #include "../../core/events.h"
 
 /** Exports the alerts XML file to WEBDIR as HTML, using XSLT.

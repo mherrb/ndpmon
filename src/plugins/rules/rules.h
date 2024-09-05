@@ -10,7 +10,7 @@
 #include <libxml/tree.h>
 
 #include "../../ndpmon_netheaders.h"
-#include "../../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 
 #include "rules_types.h"
 #include "rules_matches.h"

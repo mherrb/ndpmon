@@ -9,7 +9,7 @@
 #include <ifaddrs.h>
 #include <linux/if_packet.h>
 
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 #include "../ndpmon_netheaders.h"
 #include "../membounds.h"
 

@@ -20,7 +20,7 @@
 #include <assert.h>
 
 #include "../membounds.h"
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 
 #include "neighbors.h"
 #include "probes.h"

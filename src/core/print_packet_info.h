@@ -57,7 +57,7 @@ Olivier Festor, Scientific Leader of the MADYNEs Project, 20 August 2006
 
 #include "neighbors.h"
 #include "routers.h"
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 
 
 /*Print the ipv6 addr in a readable form*/ 

@@ -35,7 +35,7 @@ Olivier Festor, Scientific Leader of the MADYNEs Project, 20 August 2006
 #define _MONITORING_NA_ 1
 
 #include "../membounds.h"
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 #include "../ndpmon_netheaders.h"
 
 #include "../core/alerts.h"

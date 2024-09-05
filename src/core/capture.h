@@ -3,7 +3,7 @@
 
 #include <sched.h>
 
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 #include "../ndpmon_netheaders.h"
 #include "parser.h"
 #include "probes.h"

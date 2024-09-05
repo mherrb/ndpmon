@@ -60,7 +60,7 @@ Olivier Festor, Scientific Leader of the MADYNEs Project, 20 August 2006
 #include <libxml/xpath.h>
 
 #include "../membounds.h"
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 
 #include "../core/alerts.h"
 #include "../core/routers.h"

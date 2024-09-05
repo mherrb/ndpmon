@@ -1,0 +1,11 @@
+option('mac_resolv', type: 'boolean', value: false)
+option('countermeasures', type: 'boolean', value: false)
+option('webinterface', type: 'boolean', value: false)
+option('rules', type: 'boolean', value: false)
+# option('soap', type: 'boolean', value: false)
+
+option('var-datadir', type: 'string')
+option('confdir', type: 'string')
+option('manuf', type: 'string')
+option('webdir', type: 'string')
+

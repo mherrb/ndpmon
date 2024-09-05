@@ -56,7 +56,7 @@ Olivier Festor, Scientific Leader of the MADYNEs Project, 20 August 2006
 #include <netinet/icmp6.h>
 
 #include "../membounds.h"
-#include "../ndpmon_defs.h"
+#include "ndpmon_defs.h"
 
 #include "../core/alerts.h"
 #include "../core/watchers.h"
