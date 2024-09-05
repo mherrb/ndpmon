@@ -435,7 +435,9 @@ print_routers(*routers);
 		uint32_t reachable_timer, retrans_timer;
 		char param_mismatched_list[RA_PARAM_MISMATCHED_LIST_SIZE], param_mismatched[RA_PARAM_MISMATCHED_SIZE];
 		int param_mismatch = 0;
+#ifdef _COUNTERMEASURES_
 		int dns_option_error = 0;
+#endif
 		/* END ADDED */
 #ifdef _COUNTERMEASURES_
 		int param_spoofing_detected = 0;
@@ -720,7 +722,9 @@ fprintf(stderr, "Recursive DNS nameServer option with %d NS and lifetime %u!!!\n
 					/* option set but no nameserver is given */
 					snprintf (buffer, NOTIFY_BUFFER_SIZE, "wrong RA RDNSS option: empty nameservers list");
 					alert_raise(2, capture_info->probe, "wrong RA RDNSS option", buffer, (struct ether_addr*) (ethernet_header->ether_shost), NULL, &capture_info->ip6_header->ip6_src, NULL);
+#ifdef _COUNTERMEASURES_
 					dns_option_error = 1;
+#endif
 					ret = 2;
 				}
 				for (addr = (struct in6_addr *) (pos+8); nb_ns > 0; addr++, nb_ns --)
@@ -739,9 +743,9 @@ fprintf(stderr, "Recursive DNS nameServer option with %d NS and lifetime %u!!!\n
 						{
 							cm_kill_wrong_nameserver(router, &capture_info->ip6_header->ip6_src, addr, locked_probe->name);
 						}
-#endif
 
 						dns_option_error = 1;
+#endif
 						ret = 2;
 					}
 				}
@@ -788,7 +792,9 @@ fprintf(stderr, "DNS Search List option with lifetime %u of length %u !!!\n", li
 							/* Domain too long */
 							snprintf (buffer, NOTIFY_BUFFER_SIZE, "wrong RA DNSSL option: search domain too long");
 							alert_raise(2, capture_info->probe, "wrong RA DNSSL option", buffer, (struct ether_addr*) (ethernet_header->ether_shost), NULL, &capture_info->ip6_header->ip6_src, NULL);
+#ifdef _COUNTERMEASURES_
 							dns_option_error = 1;
+#endif
 							ret = 2;
 							stop = 1;
 						}
@@ -806,8 +812,9 @@ fprintf(stderr, "DNS Search List option with lifetime %u of length %u !!!\n", li
 						/* Domain too long */
 						snprintf (buffer, NOTIFY_BUFFER_SIZE, "wrong RA DNSSL option: search domain too long");
 						alert_raise(2, capture_info->probe, "wrong RA DNSSL option", buffer, (struct ether_addr*) (ethernet_header->ether_shost), NULL, &capture_info->ip6_header->ip6_src, NULL);
-
+#ifdef _COUNTERMEASURES_
 						dns_option_error = 1;
+#endif
 						ret = 2;
 						stop = 1;
 					}
@@ -842,9 +849,9 @@ fprintf(stderr, "    ---> Search domain %s\n", domain);
 					{
 						cm_kill_wrong_domain(router, &capture_info->ip6_header->ip6_src, domain, locked_probe->name);
 					}
-#endif
 
 						dns_option_error = 1;
+#endif
 						ret = 2;
 					}
 
