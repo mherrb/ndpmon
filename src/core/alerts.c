@@ -429,6 +429,6 @@ void do_exec_pipe_program(char* program, char* pipedata)
 	pipeprocess = popen(program, "w");
 	fprintf(pipeprocess, "%s\n", pipedata);
 	fflush(pipeprocess);
-	fclose(pipeprocess);
+	pclose(pipeprocess);
 }
 
