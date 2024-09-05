@@ -29,6 +29,7 @@ if confdir == ''
         confdir = '/usr/local/etc'
     endif
 endif
+message('confdir: ' + confdir)
 
 if get_option('webinterface')
     webdir = get_option('webdir')
@@ -54,13 +55,49 @@ endif
 
 ndpconfig = configuration_data()
 ndpconfig.set('prefix', get_option('prefix'))
-ndpconfig.set('VARDATADIR', vardatadir)
+ndpconfig.set('exec_prefix', '${prefix}')
+ndpconfig.set('datadir', join_paths('${prefix}', 'share'))
+ndpconfig.set('sbindir', join_paths('${exec_prefix}', 'sbin'))
+ndpconfig.set('sysconfdir', confdir)
+ndpconfig.set('localstatedir', '${prefix}/var')
 ndpconfig.set('CONFDIR', confdir)
+ndpconfig.set('MANDIR', mandir)
+ndpconfig.set('VARDATADIR', vardatadir)
 ndpconfig.set('WEBDIR', webdir)
 
 configure_file(
     input: 'src/ndpmon_defs.h.in',
     output: 'ndpmon_defs.h',
+    configuration: ndpconfig,
+)
+
+configure_file(
+    input: 'install/ndpmon.sh.in',
+    output: 'ndpmon.sh',
+    configuration: ndpconfig,
+)
+
+configure_file(
+    input: 'install/config_ndpmon.xml.in',
+    output: 'config_ndpmon.xml',
+    configuration: ndpconfig,
+)
+
+configure_file(
+    input: 'install/neighbor_list.xml.in',
+    output: 'neighbor_list.xml',
+    configuration: ndpconfig,
+)
+
+configure_file(
+    input: 'install/alerts_to_xml.py.in',
+    output: 'alerts_to_xml.py',
+    configuration: ndpconfig,
+)
+
+configure_file(
+    input: 'install/ndpmon.8.in',
+    output: 'ndpmon.8',
     configuration: ndpconfig,
 )
 
