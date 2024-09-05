@@ -204,7 +204,6 @@ void parser_handler_std_save_cache(const struct event_info* event)
 	{
 		if (difftime(current, last_save_time) > 60) 
 		{
-			struct neighbor_update_info *data = (struct neighbor_update_info *)event->data;
 			parser_neighbors_store();
 			last_save_time = current; /* extension point */
 #ifdef _COUNTERMEASURES_
