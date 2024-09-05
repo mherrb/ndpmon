@@ -180,7 +180,7 @@ int capture_lnfq_callback(struct nfq_q_handle *queue_handle, struct nfgenmsg *nf
     struct nfqnl_msg_packet_hdr* packet_header; /* lnfq */
     uint32_t                     packet_id;
     int                          packet_length;
-    char*                        packet_data;
+    unsigned char*               packet_data;
     char                         packet_interface[PROBE_NAME_SIZE];
     uint8_t*                     packet_with_pseudo;
     struct timeval               timestamp;
