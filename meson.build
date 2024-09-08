@@ -81,24 +81,28 @@ configure_file(
     input: 'install/config_ndpmon.xml.in',
     output: 'config_ndpmon.xml',
     configuration: ndpconfig,
+    install_dir: join_paths(confdir, 'ndpmon')
 )
 
 configure_file(
     input: 'install/neighbor_list.xml.in',
     output: 'neighbor_list.xml',
     configuration: ndpconfig,
+    install_dir: join_paths(vardatadir, 'ndpmon')
 )
 
 configure_file(
     input: 'install/alerts_to_xml.py.in',
     output: 'alerts_to_xml.py',
     configuration: ndpconfig,
+    install_dir: join_paths(get_option('prefix'), 'ndpmon')
 )
 
 configure_file(
     input: 'install/ndpmon.8.in',
     output: 'ndpmon.8',
     configuration: ndpconfig,
+    install_dir: mandir,
 )
 
 libxml2_dep = dependency('libxml-2.0', version: '>= 2.9.13')
@@ -205,4 +209,15 @@ executable('ndpmon',
            srcs_ndpmon,
            dependencies: ndpmon_deps,
            install: true,
+           install_dir: join_paths(get_option('prefix'), 'sbin'),
           )
+
+install_data('install/neighbor_list.dtd',
+             install_dir: join_paths(vardatadir, 'ndpmon'),
+             install_mode: 'rw-r--r--',
+            )
+
+install_data('install/config_ndpmon.dtd',
+             install_dir: join_paths(confdir, 'ndpmon'),
+             install_mode: 'rw-r--r--',
+            )
