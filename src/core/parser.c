@@ -1,6 +1,6 @@
 #include "parser.h"
 
-int paser_alerts_append(const struct alert_info* const alert)
+int parser_alerts_append(const struct alert_info* const alert)
 {
 	xmlDoc *doc = NULL;
 	xmlNodePtr root_element = NULL;

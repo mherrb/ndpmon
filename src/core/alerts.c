@@ -299,7 +299,7 @@ void alert_handler_std_xml_append(const struct event_info* event)
 		return;
 	}
 	alert = &event->data->alert;
-	paser_alerts_append(alert);
+	parser_alerts_append(alert);
 }
 
 void alert_raise(int priority, const struct probe* probe, char* reason,

@@ -48,7 +48,7 @@
  *  @param alert The alert to be appended.
  *  @return      0 on success, -1 otherwise.
  */
-int paser_alerts_append(const struct alert_info* const alert);
+int parser_alerts_append(const struct alert_info* const alert);
 
 /** Stores the running NDPMon configuration to the XML configuration file.
     Recursively calls the store procedures of other modules to build the

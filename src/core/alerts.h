@@ -64,7 +64,7 @@ Olivier Festor, Scientific Leader of the MADYNEs Project, 20 August 2006
 /** Integer representing a high priority alert (2). */
 #define ALERT_PRIORITY_HIGH 2
 
-extern int paser_alerts_append(const struct alert_info* const alert);
+extern int parser_alerts_append(const struct alert_info* const alert);
 
 /** Test if the message has been recently sent to avoid
  *  multiple warnings for the same problem.
