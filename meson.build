@@ -105,6 +105,10 @@ configure_file(
     install_dir: mandir,
 )
 
+libbsd_dep = dependency('libbsd-overlay', required: false)
+if not cc.has_function('strlcpy', dependencies: libbsd_dep)
+    error('strlcpy missing in libc or libbsd')
+endif
 libxml2_dep = dependency('libxml-2.0', version: '>= 2.9.13')
 libxslt_dep = dependency('libxslt', version: '>= 1.1.34')
 thread_dep = dependency('threads')
@@ -199,6 +203,7 @@ ndpmon_deps = [
     libxml2_dep,
     libxslt_dep,
     openssl_dep,
+    libbsd_dep,
 ]
 
 if use_pcap
