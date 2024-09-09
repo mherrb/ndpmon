@@ -177,11 +177,11 @@ struct icmp_nd_opt_dnssl* create_nd_opt_dnssl(const char *domain, const uint32_t
 	/* Lifetime */
 	opt_dnssl->nd_opt_dnssl_lifetime = lifetime;
 	/* Search domain 
-	 * if domain is less than 256, strncpy will put null bytes until the end of the string
-	 * which is equivalent to padding
+	 * if domain is less than 256, domain is set to all 0 first
 	 * thus we have a domain field with constant size of 256 Bytes
 	 **/
-	strncpy(opt_dnssl->nd_opt_dnssl_domain, domain, MAX_DOMAINLEN);
+	memset(opt_dnssl->nd_opt_dnssl_domain, 0, MAX_DOMAINLEN+1);
+	strlcpy(opt_dnssl->nd_opt_dnssl_domain, domain, MAX_DOMAINLEN+1);
 
 	return opt_dnssl;
 }
