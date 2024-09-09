@@ -49,7 +49,7 @@ int alert_already_sent(const char* const message)
 	}
 
 	/* message was not found, add it to the history.*/
-	strncpy(old_messages[index], message, NOTIFY_BUFFER_SIZE);
+	strlcpy(old_messages[index], message, NOTIFY_BUFFER_SIZE);
 
 	/* history is a cyclic buffer, if the end is reached go back to the
 	 * start: */
@@ -93,7 +93,7 @@ char* alert_create_mailmessage(const struct alert_info* const alert_info)
 
 	if (memcmp(&alert_info->ethernet_address2, mac_unspecified, sizeof(struct ether_addr))==0) 
 	{
-		strncpy(ethernet_address2_str, "n/a", ETH_ADDRSTRLEN);
+		strlcpy(ethernet_address2_str, "n/a", ETH_ADDRSTRLEN);
 	} else 
 	{
 		ether_ntoa_r(&alert_info->ethernet_address2, ethernet_address2_str);
@@ -104,7 +104,7 @@ char* alert_create_mailmessage(const struct alert_info* const alert_info)
 
 	if (memcmp(&alert_info->ipv6_address, ipv6_unspecified, sizeof(struct in6_addr))==0) 
 	{
-		strncpy(ipv6_address_str, "n/a", ETH_ADDRSTRLEN);
+		strlcpy(ipv6_address_str, "n/a", ETH_ADDRSTRLEN);
 	} else 
 	{
 		inet_ntop(AF_INET6, &alert_info->ipv6_address, ipv6_address_str, INET6_ADDRSTRLEN);
@@ -115,7 +115,7 @@ char* alert_create_mailmessage(const struct alert_info* const alert_info)
 		alert_gethostfromipv6(&alert_info->ipv6_address,hostname);
 	} else 
 	{
-		strncpy(hostname, "n/a", HOST_NAME_SIZE);
+		strlcpy(hostname, "n/a", HOST_NAME_SIZE);
 	}
 
 	/* write content: */
@@ -326,9 +326,9 @@ void alert_raise(int priority, const struct probe* probe, char* reason,
 	/* fill event_data structure: */
 	new->alert.priority = priority;
 	new->alert.time     = current;
-	strncpy(new->alert.probe_name, probe->name, PROBE_NAME_SIZE);
-	strncpy(new->alert.reason, reason, ALERT_REASON_SIZE);
-	strncpy(new->alert.message, message, ALERT_MESSAGE_SIZE);
+	strlcpy(new->alert.probe_name, probe->name, PROBE_NAME_SIZE);
+	strlcpy(new->alert.reason, reason, ALERT_REASON_SIZE);
+	strlcpy(new->alert.message, message, ALERT_MESSAGE_SIZE);
 	memcpy(&new->alert.ethernet_address1, ethernet_address1, sizeof(struct ether_addr));
 
 	if (ethernet_address2!=NULL)
