@@ -42,7 +42,7 @@ void probe_copy(struct probe *destination, const struct probe *source)
 
 	destination->extinfo = NULL; /* TODO copy extinfo? */
 	memcpy(&destination->ethernet_address, &source->ethernet_address, sizeof(struct ether_addr));
-	strncpy(destination->name, source->name, PROBE_NAME_SIZE);
+	strlcpy(destination->name, source->name, PROBE_NAME_SIZE);
 	destination->type = source->type;
 #ifdef _COUNTERMEASURES_
 	destination->cm_enabled = source->cm_enabled;
@@ -124,7 +124,7 @@ int probe_load_config(xmlNodePtr element, char* name, enum probe_type* type,
 		return -1;
 	}
 
-	strncpy(name, (char*)device_prop, PROBE_NAME_SIZE);
+	strlcpy(name, (char*)device_prop, PROBE_NAME_SIZE);
 	xmlFree(device_prop);
 
 	if (type_prop!=NULL && STRCMP(type_prop, "interface")==0) 
@@ -309,7 +309,7 @@ int probe_list_add(char* const name, enum probe_type type,
 		return -1;
 	}
 	memset(new, 0, sizeof(struct probe_list));
-	strncpy(new->entry.name, name, PROBE_NAME_SIZE);
+	strlcpy(new->entry.name, name, PROBE_NAME_SIZE);
 	new->entry.type = type;
 #ifdef _COUNTERMEASURES_
 	new->entry.cm_enabled = cm_enabled;
@@ -699,7 +699,7 @@ void probe_updown(enum probe_updown_state state, struct probe* probe)
 		/* on probe down only the name is copied,
 		 * all other fields were set to 0 by event_data_create().
 		 */
-		strncpy(event->probe_updown.probe.name, probe->name, PROBE_NAME_SIZE);
+		strlcpy(event->probe_updown.probe.name, probe->name, PROBE_NAME_SIZE);
 	}
 
 	/* decide which address will be used as a key for updates: */
