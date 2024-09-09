@@ -390,7 +390,7 @@ int alert_save(xmlNodePtr element, const struct alert_info* const alert)
 void alert_sendmail(const char* message, const char* subjectappend) 
 {
 	FILE *pp;
-	static char args[MAIL_ARGS_SIZE];/*shoule be sufficient*/
+	static char args[MAIL_ARGS_SIZE];/*should be sufficient*/
 
 	snprintf(args, MAIL_ARGS_SIZE, "mail -s \"NDPMon_Security_Alert: %s\" %s", subjectappend, admin_mail);
 
