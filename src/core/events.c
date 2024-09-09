@@ -29,7 +29,7 @@ int event_handler_add(char* name, event_handler_t handler) {
         perror("malloc");
         return -1;
     }
-    strncpy(new->name, name, EVENT_HANDLER_NAME_SIZE);
+    strlcpy(new->name, name, EVENT_HANDLER_NAME_SIZE);
     new->handler = handler;
     new->next = NULL;
     if (event_handlers==NULL) {
