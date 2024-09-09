@@ -349,7 +349,7 @@ int watch_eth_mismatch(struct capture_info* const capture_info)
 			if(MEMCMP(addr1,addr2,6)!=0)
 			{
 				char eth1[ETH_ADDRSTRLEN];
-				strncpy( eth1, ether_ntoa(addr1), ETH_ADDRSTRLEN);
+				strlcpy( eth1, ether_ntoa(addr1), ETH_ADDRSTRLEN);
 				snprintf (buffer, NOTIFY_BUFFER_SIZE, "ethernet mismatch %s %s %s", ether_ntoa(addr2),eth1, str_ip);
 				alert_raise(1, capture_info->probe, "ethernet mismatch", buffer, addr1, addr2, &capture_info->ip6_header->ip6_src, NULL);
 				return 1;
@@ -543,7 +543,7 @@ int new_station(struct capture_info* const capture_info)
 #ifdef _MACRESOLUTION_
 		/* Verify that the MAC address is from a known vendor */
 		char vendor[MANUFACTURER_NAME_SIZE];
-		strncpy(vendor, get_manufacturer(manuf, ethernet_source), MANUFACTURER_NAME_SIZE);
+		strlcpy(vendor, get_manufacturer(manuf, ethernet_source), MANUFACTURER_NAME_SIZE);
 
 		if( !strncmp(vendor, "unknown", MANUFACTURER_NAME_SIZE) )
 		{
