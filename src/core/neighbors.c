@@ -338,7 +338,7 @@ int neighbor_update_mac(neighbor_list_t *list, const struct in6_addr* lla,
     tmp->previous_mac = tmp->mac;
     memcpy(&tmp->mac, new_mac, sizeof(struct ether_addr));
 #ifdef _MACRESOLUTION_
-    strncpy(tmp->vendor, get_manufacturer(manuf, new_mac), MANUFACTURER_NAME_SIZE);
+    strlcpy(tmp->vendor, get_manufacturer(manuf, new_mac), MANUFACTURER_NAME_SIZE);
 #endif
     return 1;
 }
@@ -528,7 +528,7 @@ int add_neighbor(neighbor_list_t **list, const struct ether_addr* eth)
         new->trouble = 0;
 /* END ADDED */
 #ifdef _MACRESOLUTION_
-	strncpy(new->vendor, get_manufacturer(manuf, eth), MANUFACTURER_NAME_SIZE);
+	strlcpy(new->vendor, get_manufacturer(manuf, eth), MANUFACTURER_NAME_SIZE);
 #endif
 	new->old_mac = NULL;
 	new->lla  = in6addr_any;
@@ -662,8 +662,8 @@ void print_neighbors(neighbor_list_t *list)
 		ethernet_t *etmp = tmp->old_mac;
 
 		inet_ntop(AF_INET6, &tmp->lla, lla, INET6_ADDRSTRLEN);
-		strncpy(eth,ether_ntoa(&(tmp->mac)), ETH_ADDRSTRLEN);
-		strncpy(first_eth,ether_ntoa(&(tmp->first_mac_seen)), ETH_ADDRSTRLEN);
+		strlcpy(eth,ether_ntoa(&(tmp->mac)), ETH_ADDRSTRLEN);
+		strlcpy(first_eth,ether_ntoa(&(tmp->first_mac_seen)), ETH_ADDRSTRLEN);
 		fprintf(stderr,"    Neighbor (%s,%s,%s,%ld):\n", eth, first_eth, lla, tmp->timer);
 		if(atmp != NULL)
 		{
@@ -682,7 +682,7 @@ void print_neighbors(neighbor_list_t *list)
 			while(etmp != NULL)
 			{
 				char addr[ETH_ADDRSTRLEN+1];
-				strncpy(addr,ether_ntoa(&(etmp->mac)), ETH_ADDRSTRLEN);
+				strlcpy(addr,ether_ntoa(&(etmp->mac)), ETH_ADDRSTRLEN);
 				fprintf(stderr,"    %s\n", addr);
 				etmp=etmp->next;
 			}
@@ -1020,7 +1020,7 @@ void neighbor_update(char* probe_name,
 
     neighbor_copy(neighbor_cp, neighbor);
     /* retrieve the probes name: */
-    strncpy(event->neighbor_update.probe_name, probe_name, PROBE_NAME_SIZE);
+    strlcpy(event->neighbor_update.probe_name, probe_name, PROBE_NAME_SIZE);
 
     /* decide which address will be used as a key for updates: */
     if (key_lla!=NULL) {
