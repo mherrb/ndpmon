@@ -85,7 +85,7 @@ typedef struct rdnss
 /* DNS Search List */
 typedef struct dnssl
 {
-	char domain[MAX_DOMAINLEN];
+	char domain[MAX_DOMAINLEN+1];
 	uint32_t lifetime;
 	struct dnssl *next;
 } dnssl_t;

@@ -62,7 +62,7 @@ struct icmp_nd_opt_dnssl
 	uint8_t nd_opt_dnssl_len;
 	uint16_t nd_opt_dnssl_reserved;
 	uint32_t nd_opt_dnssl_lifetime;
-	char nd_opt_dnssl_domain[MAX_DOMAINLEN];
+	char nd_opt_dnssl_domain[MAX_DOMAINLEN+1];
 };
 
 /* RFC6106 - END */
