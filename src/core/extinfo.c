@@ -25,7 +25,7 @@ int extinfo_type_list_add(const char* const name, handler_free_t handler_free,
     new->entry.handler_print = handler_print;
     new->entry.handler_xml_load = handler_xml_load;
     new->entry.handler_xml_save = handler_xml_save;
-    strncpy(new->entry.name, name, EXTINFO_NAME_SIZE);
+    strlcpy(new->entry.name, name, EXTINFO_NAME_SIZE);
     new->next = NULL;
     if (extinfo_types==NULL) {
         /* if the list is empty the new entry is the list: */
