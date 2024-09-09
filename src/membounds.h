@@ -18,7 +18,7 @@
 #define MAIL_ARGS_SIZE 256                /* -> alarm.c/mail()
                                                   I quote the source code comment of alarm.c: should be sufficient... ;) */
 
-#define NOTIFY_BUFFER_SIZE 256            /* -> alarm.c/already_sent()
+#define NOTIFY_BUFFER_SIZE 512            /* -> alarm.c/already_sent()
                                                   all functions calling alarm.c/notify():
                                                   neighbor.c/reset_neighbor_timer()
                                                              new_station()

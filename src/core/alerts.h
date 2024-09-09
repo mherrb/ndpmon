@@ -58,7 +58,7 @@ Olivier Festor, Scientific Leader of the MADYNEs Project, 20 August 2006
 /** The length of the list of mail alerts send (to prevent sending multiple mail alerts for the same problem). */
 #define HISTORY_LENGTH 20
 /** The size of a mail notification text. */
-#define ALERT_MAIL_SIZE     1024
+#define ALERT_MAIL_SIZE     2048
 /** Integer defining a low priority alert (1). */
 #define ALERT_PRIORITY_LOW  1
 /** Integer representing a high priority alert (2). */
