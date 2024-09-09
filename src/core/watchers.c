@@ -17,8 +17,7 @@ int watchers_add(char* name, watcher_type watcher, uint8_t icmp6_type_match, uin
         perror("malloc");
         return -1;
     }
-    memset(new_watcher->name, 0, WATCHER_NAME_SIZE);
-    strncpy(new_watcher->name, name, WATCHER_NAME_SIZE-1);
+    strlcpy(new_watcher->name, name, WATCHER_NAME_SIZE);
     new_watcher->watcher = watcher;
     new_watcher->icmp6_type_match = icmp6_type_match;
     new_watcher->watch_flags_match = watch_flags_match;
