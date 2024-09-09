@@ -87,7 +87,7 @@ void cm_guard_to_representation(struct cm_guard* guard, char* config)
 	switch (guard->strategy_type) 
 	{
 		case CM_GUARD_STRATEGY_TYPE_RESPOND:
-			strncpy(config, "RESPOND", CM_GUARD_REPRESENTATION_SIZE-1);
+			strlcpy(config, "RESPOND", CM_GUARD_REPRESENTATION_SIZE);
 			return;
 		case CM_GUARD_STRATEGY_TYPE_LAUNCH:
 			snprintf(config, CM_GUARD_REPRESENTATION_SIZE, "LAUNCH AFTER %u", guard->strategy_criteria);
@@ -97,7 +97,7 @@ void cm_guard_to_representation(struct cm_guard* guard, char* config)
 			return;
 		case CM_GUARD_STRATEGY_TYPE_SUPPRESS:
 		default:
-			strncpy(config, "SUPPRESS", CM_GUARD_REPRESENTATION_SIZE);
+			strlcpy(config, "SUPPRESS", CM_GUARD_REPRESENTATION_SIZE);
 			return;
 	}
 }
