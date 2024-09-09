@@ -510,7 +510,7 @@ int add_neighbor(neighbor_list_t **list, const struct ether_addr* eth)
 
 	if(is_neighbor_by_mac(*list,eth))
 	{
-		fprintf(stderr,"Neighbor already in list\n");
+		fprintf(stderr,"Neighbor already in list %s\n", ether_ntoa(eth));
 		return 0;
 	}
 
