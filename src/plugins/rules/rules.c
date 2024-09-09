@@ -5,98 +5,98 @@ static int  rule_field_translations_initialized = 0;
 
 void rule_field_to_str(const rule_field_t field, char* const res) {
 
-    memset(res, 0, RULE_FIELD_SIZE);
+    memset(res, 0, RULE_FIELD_SIZE );
     if (field > (RULE_FIELDS_COUNT-1)) {
-        strncpy(res, "UNKNOWN", RULE_FIELD_SIZE-1);
+        strlcpy(res, "UNKNOWN", RULE_FIELD_SIZE);
         return;
     }
-    strncpy(res, rule_field_translations[field], RULE_FIELD_SIZE-1);
+    strlcpy(res, rule_field_translations[field], RULE_FIELD_SIZE);
 }
 
 void rule_field_translations_init() {
     if (rule_field_translations_initialized!=0) {
         return;
     }
-    strncpy(rule_field_translations[RULE_FIELD_ETHERNET_SOURCE]
-                            , "ethernet.source", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ETHERNET_DESTINATION]
-                            , "ethernet.destination", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_INET6_SOURCE]
-                            , "inet6.source", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_INET6_DESTINATION]
-                            , "inet6.destination", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_INET6_PAYLOAD]
-                            , "inet6.payload", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_INET6_NEXTHEADER]
-                            , "inet6.nextheader", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_INET6_HOPLIMIT]
-                            , "inet6.hoplimit", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ICMP6_TYPE]
-                            , "icmp6.type", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ICMP6_CODE]
-                            , "icmp6.code", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RS]
-                            , "nd.rs", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RA]
-                            , "nd.ra", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_NS]
-                            , "nd.ns", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_NA]
-                            , "nd.na", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RD]
-                                , "nd.rd", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RA_CURHOPLIMIT]
-                            , "nd.ra.curhoplimit", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RA_FLAG_MANAGED]
-                            , "nd.ra.flag.managed", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RA_FLAG_OTHER]
-                            , "nd.ra.flag.other", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RA_FLAG_HOMEAGENT]
-                            , "nd.ra.flag.homeagent", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RA_LIFETIME]
-                            , "nd.ra.lifetime", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RA_REACHABLETIMER ]
-                            , "nd.ra.reachabletimer", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RA_RETRANSTIMER]
-                            , "nd.ra.retranstimer", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_NS_TARGETADDRESS]
-                            , "nd.ns.targetaddress", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_NA_FLAG_ROUTER]
-                            , "nd.na.flag.router", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_NA_FLAG_SOLICITED]
-                            , "nd.na.flag.solicited", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_NA_FLAG_OVERRIDE]
-                            , "nd.na.flag.override", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_NA_TARGETADDRESS]
-                            , "nd.na.targetaddress", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RD_TARGETADDRESS]
-                            , "nd.rd.targetaddress", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_RD_DESTINATIONADDRESS]
-                            , "nd.rd.destinationaddress", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_SOURCELINKLAYER]
-                            , "nd.opt.sourcelinklayer", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_TARGETLINKLAYER]
-                            , "nd.opt.targetlinklayer", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO]
-                            , "nd.opt.prefixinfo", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_MTU]
-                            , "nd.opt.mtu", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_SOURCELINKLAYER_ADDRESS]
-                            , "nd.opt.sourcelinklayer.address", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_TARGETLINKLAYER_ADDRESS]
-                            , "nd.opt.targetlinklayer.address", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_FLAG_ONLINK]
-                            , "nd.opt.prefixinfo.flag.onlink", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_FLAG_AUTOCONF]
-                            , "nd.opt.prefixinfo.flag.autoconf", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_VALIDLIFETIME]
-                            , "nd.opt.prefixinfo.validlifetime", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_PREFERREDLIFETIME]
-                            , "nd.opt.prefixinfo.preferredlifetime", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_PREFIX]
-                            , "nd.opt.prefixinfo.prefix", RULE_FIELD_SIZE-1);
-    strncpy(rule_field_translations[RULE_FIELD_ND_OPT_MTU_MTU]
-                            , "nd.opt.mtu.mtu", RULE_FIELD_SIZE-1);
+    strlcpy(rule_field_translations[RULE_FIELD_ETHERNET_SOURCE]
+                            , "ethernet.source", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ETHERNET_DESTINATION]
+                            , "ethernet.destination", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_INET6_SOURCE]
+                            , "inet6.source", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_INET6_DESTINATION]
+                            , "inet6.destination", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_INET6_PAYLOAD]
+                            , "inet6.payload", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_INET6_NEXTHEADER]
+                            , "inet6.nextheader", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_INET6_HOPLIMIT]
+                            , "inet6.hoplimit", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ICMP6_TYPE]
+                            , "icmp6.type", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ICMP6_CODE]
+                            , "icmp6.code", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RS]
+                            , "nd.rs", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RA]
+                            , "nd.ra", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_NS]
+                            , "nd.ns", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_NA]
+                            , "nd.na", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RD]
+                                , "nd.rd", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RA_CURHOPLIMIT]
+                            , "nd.ra.curhoplimit", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RA_FLAG_MANAGED]
+                            , "nd.ra.flag.managed", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RA_FLAG_OTHER]
+                            , "nd.ra.flag.other", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RA_FLAG_HOMEAGENT]
+                            , "nd.ra.flag.homeagent", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RA_LIFETIME]
+                            , "nd.ra.lifetime", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RA_REACHABLETIMER ]
+                            , "nd.ra.reachabletimer", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RA_RETRANSTIMER]
+                            , "nd.ra.retranstimer", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_NS_TARGETADDRESS]
+                            , "nd.ns.targetaddress", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_NA_FLAG_ROUTER]
+                            , "nd.na.flag.router", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_NA_FLAG_SOLICITED]
+                            , "nd.na.flag.solicited", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_NA_FLAG_OVERRIDE]
+                            , "nd.na.flag.override", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_NA_TARGETADDRESS]
+                            , "nd.na.targetaddress", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RD_TARGETADDRESS]
+                            , "nd.rd.targetaddress", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_RD_DESTINATIONADDRESS]
+                            , "nd.rd.destinationaddress", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_SOURCELINKLAYER]
+                            , "nd.opt.sourcelinklayer", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_TARGETLINKLAYER]
+                            , "nd.opt.targetlinklayer", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO]
+                            , "nd.opt.prefixinfo", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_MTU]
+                            , "nd.opt.mtu", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_SOURCELINKLAYER_ADDRESS]
+                            , "nd.opt.sourcelinklayer.address", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_TARGETLINKLAYER_ADDRESS]
+                            , "nd.opt.targetlinklayer.address", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_FLAG_ONLINK]
+                            , "nd.opt.prefixinfo.flag.onlink", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_FLAG_AUTOCONF]
+                            , "nd.opt.prefixinfo.flag.autoconf", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_VALIDLIFETIME]
+                            , "nd.opt.prefixinfo.validlifetime", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_PREFERREDLIFETIME]
+                            , "nd.opt.prefixinfo.preferredlifetime", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_PREFIXINFO_PREFIX]
+                            , "nd.opt.prefixinfo.prefix", RULE_FIELD_SIZE);
+    strlcpy(rule_field_translations[RULE_FIELD_ND_OPT_MTU_MTU]
+                            , "nd.opt.mtu.mtu", RULE_FIELD_SIZE);
     if (DEBUG) {
         int x;
         for (x=0; x< RULE_FIELDS_COUNT; x++) {
@@ -121,7 +121,7 @@ int rule_list_add(struct rule_list** rules, char* description, struct rule_match
         return -1;
     }
     memset(new_rule->description, 0, RULE_DESCRIPTION_SIZE);
-    strncpy(new_rule->description, description, RULE_DESCRIPTION_SIZE-1);
+    strlcpy(new_rule->description, description, RULE_DESCRIPTION_SIZE);
     new_rule->matches = matches;
     new_rule->exports = exports;
     new_rule->next = NULL; /* keep the list terminated */
@@ -348,8 +348,8 @@ void rule_match_value_to_str(const union rule_match_value* const value,
         case RULE_FIELD_ETHERNET_DESTINATION:
         case RULE_FIELD_ND_OPT_SOURCELINKLAYER_ADDRESS:
         case RULE_FIELD_ND_OPT_TARGETLINKLAYER_ADDRESS:
-            strncpy(res, ether_ntoa(&value->ethernet_address),
-                    RULE_MATCH_VALUE_SIZE - 1);
+            strlcpy(res, ether_ntoa(&value->ethernet_address),
+                    RULE_MATCH_VALUE_SIZE);
             break;
             /* fields of type struct in6_addr: */
         case RULE_FIELD_INET6_SOURCE:
@@ -364,7 +364,7 @@ void rule_match_value_to_str(const union rule_match_value* const value,
             sprintf(res, "%s/%u", temp, value->inet6.prefix);
             break;
         default:
-            strncpy(res, "UNKNOWN", RULE_FIELD_SIZE - 1);
+            strlcpy(res, "UNKNOWN", RULE_FIELD_SIZE);
     }
 }
 
@@ -467,10 +467,10 @@ int rule_str_to_value(const char* const value_str, const rule_field_t field,
         case RULE_FIELD_ND_OPT_PREFIXINFO_PREFIX:
             pos = strstr(value_str, "/");
             if (pos != NULL) {
-                strncpy(temp, value_str, pos - value_str);
+                strlcpy(temp, value_str, pos - value_str);
                 value_union->inet6.prefix = atoi(++pos);
             } else {
-                strncpy(temp, value_str, RULE_MATCH_VALUE_SIZE - 1);
+                strlcpy(temp, value_str, RULE_MATCH_VALUE_SIZE);
                 value_union->inet6.prefix = 128;
             }
             inet_pton(AF_INET6, temp, &value_union->inet6.address);
