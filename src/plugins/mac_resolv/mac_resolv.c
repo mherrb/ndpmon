@@ -37,8 +37,8 @@ int add_manufacturer(manufacturer_t **list, char *code, char *name)
                 return 0;
         }
 
-        strncpy(new->code,code, MANUFACTURER_CODE_SIZE);
-        strncpy(new->name,name, MANUFACTURER_NAME_SIZE);
+        strlcpy(new->code,code, MANUFACTURER_CODE_SIZE);
+        strlcpy(new->name,name, MANUFACTURER_NAME_SIZE);
         new->next = NULL;
 
         if(*list != NULL)
