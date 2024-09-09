@@ -294,7 +294,7 @@ int router_add_domain(router_list_t *list, struct ether_addr eth, const char *do
 		return 0;
 	}
 	
-	strncpy(new->domain, domain, MAX_DOMAINLEN);
+	strlcpy(new->domain, domain, MAX_DOMAINLEN+1);
 	new->lifetime = lifetime;
 	new->next = NULL;
 
@@ -599,7 +599,7 @@ void router_copy(router_list_t* destination, router_list_t* source)
 		domain_cp->lifetime = tmp_domains->lifetime;
 		domain_cp->next = NULL;
 
-		strncpy(domain_cp->domain, tmp_domains->domain, MAX_DOMAINLEN);
+		strcpy(domain_cp->domain, tmp_domains->domain);
 		if (current_domains_end==NULL) 
 		{
 			/* empty list, add first element */
@@ -663,7 +663,7 @@ void print_routers(router_list_t *list)
 		route_info_t *rtmp = tmp->routes;
 
 		ipv6_ntoa(lla,tmp->lla);
-		strncpy(eth,ether_ntoa(&(tmp->mac)), ETH_ADDRSTRLEN);
+		strlcpy(eth,ether_ntoa(&(tmp->mac)), ETH_ADDRSTRLEN);
 		fprintf(stderr,"Router (%s,%s) :\n", eth, lla);
 		fprintf(stderr,"    RA params:\n");
 		fprintf(stderr,"        curhoplimit:     %u\n", tmp->param_curhoplimit);
@@ -703,9 +703,10 @@ void print_routers(router_list_t *list)
 		fprintf(stderr,"    Prefix(es):\n");
 		while(ptmp != NULL)
 		{
-			char prefix[64];
-			ipv6_ntoa(prefix,ptmp->prefix);
-			sprintf(prefix,"%s/%d", prefix,ptmp->mask);
+			char address[64];
+			char prefix[72];
+			ipv6_ntoa(address,ptmp->prefix);
+			sprintf(prefix,"%s/%d", address,ptmp->mask);
 			fprintf(stderr,"        %s\n", prefix);
 			fprintf(stderr,"            flags:          [");
 			if (ptmp->param_flags_reserved&ND_OPT_PI_FLAG_ONLINK) {
@@ -745,10 +746,11 @@ void print_routers(router_list_t *list)
 		fprintf(stderr,"    Route(s):\n");
 		while(rtmp != NULL)
 		{
-			char prefix[64];
+			char address[64];
+			char prefix[72];
 			
-			ipv6_ntoa(prefix,rtmp->prefix);
-			sprintf(prefix,"%s/%d", prefix,rtmp->mask);
+			ipv6_ntoa(address,rtmp->prefix);
+			snprintf(prefix,sizeof(prefix),"%s/%d", address,rtmp->mask);
 			fprintf(stderr,"        %s", prefix);
 
 			fprintf(stderr,"  Pref: ");
@@ -1061,7 +1063,7 @@ int router_list_parse (xmlNodePtr element, router_list_t** routers)
 							/* Read prefix params: */
 							xmlNode *prefix_param = prefix->children;
 							prefix_t* new_prefix = malloc(sizeof(prefix_t));
-							char buffer[INET6_ADDRSTRLEN];
+							char buffer[INET6_ADDRSTRLEN+1];
 							if (new_prefix==NULL) 
 							{
 								fprintf(stderr, "malloc failed.");
@@ -1081,7 +1083,7 @@ int router_list_parse (xmlNodePtr element, router_list_t** routers)
 								if (STRCMP(prefix_param->name,"address")==0) 
 								{
 									text=(char *)XML_GET_CONTENT(prefix_param->children);
-									strncpy(buffer,text, INET6_ADDRSTRLEN);
+									strlcpy(buffer,text, INET6_ADDRSTRLEN);
 									inet_pton(AF_INET6,buffer, &new_prefix->prefix);
 								}
 								else if (STRCMP(prefix_param->name,"mask")==0) 
@@ -1160,6 +1162,7 @@ int router_list_parse (xmlNodePtr element, router_list_t** routers)
 							}
 							/* read domain */
 							domain_name = XML_GET_CONTENT(domain->children);
+							/* XXX final nul ?? */
 							memcpy(&new->domain, domain_name, MAX_DOMAINLEN);
 							/* read lifetime */
 							new->lifetime = atoi( (char *)xmlGetProp(domain, BAD_CAST "lifetime") );
@@ -1184,7 +1187,7 @@ int router_list_parse (xmlNodePtr element, router_list_t** routers)
 						{
 							/* route tag */
 							xmlNode *route_param = route->children;
-							char buffer[INET6_ADDRSTRLEN];
+							char buffer[INET6_ADDRSTRLEN+1];
 
 							route_info_t* new = malloc(sizeof(route_info_t));
 							if (new == NULL) 
@@ -1207,7 +1210,7 @@ int router_list_parse (xmlNodePtr element, router_list_t** routers)
 								if (STRCMP(route_param->name,"address")==0) 
 								{
 									text=(char *)XML_GET_CONTENT(route_param->children);
-									strncpy(buffer,text, INET6_ADDRSTRLEN);
+									strlcpy(buffer,text, INET6_ADDRSTRLEN);
 									inet_pton(AF_INET6,buffer, &new->prefix);
 								}
 								else if (STRCMP(route_param->name,"mask")==0) 
