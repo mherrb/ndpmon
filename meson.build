@@ -107,20 +107,23 @@ configure_file(
 
 libxml2_dep = dependency('libxml-2.0', version: '>= 2.9.13')
 libxslt_dep = dependency('libxslt', version: '>= 1.1.34')
-libnfq_dep = dependency('libnetfilter_queue', version: '>= 1.0.5',
-                        required: false)
 thread_dep = dependency('threads')
 openssl_dep = dependency('OpenSSL', modules: ['OpenSSL::Crypto'])
 use_pcap = false
 use_lnfq = false
 
-if not libnfq_dep.found()
+if get_option('lnfq')
+    libnfq_dep = dependency('libnetfilter_queue', version: '>= 1.0.5',
+                            required: false)
+    if not libnfq_dep.found()
+        error('lib_netfilter_queue-dev missing')
+    endif
+    use_lnfq = true
+    add_project_arguments('-D_CAPTURE_USE_LNFQ_', language: 'c')
+else
     pcap_dep = dependency('pcap', required: true)
     add_project_arguments('-D_CAPTURE_USE_PCAP_', language: 'c')
     use_pcap = true
-else
-    add_project_arguments('-D_CAPTURE_USE_LNFQ_', language: 'c')
-    use_lnfq = true
 endif
 
 srcs_core = files([
