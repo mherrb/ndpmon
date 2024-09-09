@@ -237,19 +237,19 @@ int main(int argc,char **argv)
 				  fprintf(stderr,"nb packets: %d \n", nb_packet);
 				  break;*/
 			case 'f':
-				strncpy(config_path,optarg, PATH_SIZE);
+				strlcpy(config_path,optarg, PATH_SIZE);
 				fprintf(stderr,"config file path: %s \n", config_path);
 				break;
 			case 'e':
-				strncpy(dtd_config_path, optarg, PATH_SIZE);
+				strlcpy(dtd_config_path, optarg, PATH_SIZE);
 				fprintf(stderr,"config dtd file path: %s \n", dtd_config_path);
 				break;
 			case 'g':
-				strncpy(cache_path, optarg, PATH_SIZE);
+				strlcpy(cache_path, optarg, PATH_SIZE);
 				fprintf(stderr,"cache file path: %s \n", cache_path);
 				break;
 			case 'd':
-				strncpy(dtd_path, optarg, PATH_SIZE);
+				strlcpy(dtd_path, optarg, PATH_SIZE);
 				fprintf(stderr,"neighbor dtd file path: %s \n", dtd_path);
 				break;
 			case 'L':
