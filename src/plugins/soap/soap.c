@@ -32,7 +32,7 @@ int soap_settings_load(xmlNodePtr element, void** data) {
         settings->soap_report_enabled = 0;
     } else {
         settings->soap_report_enabled = 1;
-        strncpy(settings->soap_report_url, (char*) soap_report_url,SOAP_STR_SIZE);
+        strlcpy(settings->soap_report_url, (char*) soap_report_url,SOAP_STR_SIZE);
         if (soap_report_src==NULL) {
             fprintf(stderr, "[soap] ERROR: settings: report source required.\n");
             xmlFree(soap_report_url);
@@ -41,13 +41,13 @@ int soap_settings_load(xmlNodePtr element, void** data) {
             xmlFree(soap_listen_port);
             return -1;
         }
-        strncpy(settings->soap_report_src, (char*) soap_report_src, SOAP_STR_SIZE);
+        strlcpy(settings->soap_report_src, (char*) soap_report_src, SOAP_STR_SIZE);
     }
     if (soap_listen_path==NULL) {
         settings->soap_listen_enabled = 0;
     } else {
         settings->soap_listen_enabled = 1;
-        strncpy(settings->soap_listen_path, (char*) soap_listen_path, SOAP_STR_SIZE);
+        strlcpy(settings->soap_listen_path, (char*) soap_listen_path, SOAP_STR_SIZE);
         if (soap_listen_port==NULL) {
             fprintf(stderr, "[soap] ERROR: settings: listen port required.\n");
             xmlFree(soap_report_url);
@@ -69,10 +69,10 @@ int soap_settings_load(xmlNodePtr element, void** data) {
         xmlChar* ssl_certpass = xmlGetProp(element, BAD_CAST "ssl_certpass");
         xmlChar* ssl_cafile = xmlGetProp(element, BAD_CAST "ssl_cafile");
         xmlChar* ssl_commonname = xmlGetProp(element, BAD_CAST "ssl_commonname");
-        strncpy(settings->ssl_certfile, (char*) ssl_certfile, SOAP_STR_SIZE);
-        strncpy(settings->ssl_certpass, (char*) ssl_certpass, SOAP_STR_SIZE);
-        strncpy(settings->ssl_cafile, (char*) ssl_cafile, SOAP_STR_SIZE);
-        strncpy(settings->ssl_commonname, (char*) ssl_commonname, SOAP_STR_SIZE);
+        strlcpy(settings->ssl_certfile, (char*) ssl_certfile, SOAP_STR_SIZE);
+        strlcpy(settings->ssl_certpass, (char*) ssl_certpass, SOAP_STR_SIZE);
+        strlcpy(settings->ssl_cafile, (char*) ssl_cafile, SOAP_STR_SIZE);
+        strlcpy(settings->ssl_commonname, (char*) ssl_commonname, SOAP_STR_SIZE);
     }
     xmlFree(soap_report_url);
     xmlFree(soap_report_src);
@@ -328,13 +328,13 @@ herror_t soap_listen_alert(SoapCtx *request, SoapCtx *result) {
         } else if (strncmp((char*)children->name, "ipv6_address", SOAP_STR_SIZE)==0) {
             inet_pton(AF_INET6, (char*) children->children->content, &request_ipv6_address);
         } else if (strncmp((char*)children->name, "reason", SOAP_STR_SIZE)==0) {
-            strncpy(request_reason, (char*)children->children->content, ALERT_REASON_SIZE-1);
+            strlcpy(request_reason, (char*)children->children->content, ALERT_REASON_SIZE-1);
         } else if (strncmp((char*)children->name, "message", SOAP_STR_SIZE)==0) {
-            strncpy(request_message, (char*)children->children->content, ALERT_MESSAGE_SIZE-1);
+            strlcpy(request_message, (char*)children->children->content, ALERT_MESSAGE_SIZE-1);
         } else if (strncmp((char*)children->name, "priority", SOAP_STR_SIZE)==0) {
             request_priority = atoi((char*)children->children->content);
         } else if (strncmp((char*)children->name, "probe", SOAP_STR_SIZE)==0) {
-            strncpy(request_probe_name, (char*)children->children->content, PROBE_NAME_SIZE-1);
+            strlcpy(request_probe_name, (char*)children->children->content, PROBE_NAME_SIZE-1);
         }
         children = children->next;
     }
@@ -407,7 +407,7 @@ herror_t soap_listen_neighbor_update(SoapCtx *request, SoapCtx *result) {
              }
              request_found_key = 1;
          } else if (strncmp((char*)children->name, "probe", SOAP_STR_SIZE)==0) {
-             strncpy(request_probe_name, (char*)children->children->content, PROBE_NAME_SIZE-1);
+             strlcpy(request_probe_name, (char*)children->children->content, PROBE_NAME_SIZE-1);
          } else if (strncmp((char*)children->name, "neighbor", SOAP_STR_SIZE)==0) {
              neighbor_load(children, &request_neighbor);
          }
@@ -631,8 +631,8 @@ void soap_event_handler(const struct event_info* event) {
         settings_extinfo_unlock();
         return;
     }
-    strncpy(url, settings->soap_report_url, SOAP_STR_SIZE);
-    strncpy(src, settings->soap_report_src, SOAP_STR_SIZE);
+    strlcpy(url, settings->soap_report_url, SOAP_STR_SIZE);
+    strlcpy(src, settings->soap_report_src, SOAP_STR_SIZE);
     settings_extinfo_unlock();
     /* end critical section. */
 
