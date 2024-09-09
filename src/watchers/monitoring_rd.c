@@ -49,7 +49,7 @@ int watch_rd_src(struct capture_info* const capture_info)
 
 	/* addresses to string */
 	ipv6_ntoa(ip_address, ip6_header->ip6_src);
-	strncpy( ether_address, ether_ntoa(src_eth), ETH_ADDRSTRLEN);
+	strlcpy( ether_address, ether_ntoa(src_eth), ETH_ADDRSTRLEN);
 
 	/* begin critical section: */
 	locked_probe = probe_lock(capture_info->probe->name);
