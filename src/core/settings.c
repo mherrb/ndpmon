@@ -182,7 +182,7 @@ int settings_parse(xmlNodePtr element) {
         } else if (STRCMP(setting->name, "admin_mail")==0) {
             char* value = (char*)XML_GET_CONTENT(setting->children);
             if (value!=NULL) {
-                strncpy(admin_mail,value, ADMIN_MAIL_SIZE);
+                strlcpy(admin_mail,value, ADMIN_MAIL_SIZE);
             }
         } else if (STRCMP(setting->name, "ignor_autoconf")==0) {
 	    char* flag = (char *)XML_GET_CONTENT(setting->children);
@@ -210,7 +210,7 @@ int settings_parse(xmlNodePtr element) {
         } else if (STRCMP(setting->name, "syslog_facility")==0) {
             char* value = (char*)XML_GET_CONTENT(setting->children);
             int facility;
-            strncpy(syslog_facility,value, SYSLOG_FACILITY_SIZE);
+            strlcpy(syslog_facility,value, SYSLOG_FACILITY_SIZE);
             str_to_facility(value, &facility);
             if (facility == -1) {
                 fprintf(stderr, "ERROR: unknown syslog facility.");
