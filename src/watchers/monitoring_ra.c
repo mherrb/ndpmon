@@ -46,7 +46,7 @@ int watch_ra(struct capture_info* const capture_info)
 
 	src_eth = (struct ether_addr *) capture_info->ethernet_header->ether_shost;
 	ipv6_ntoa(ip_address, capture_info->ip6_header->ip6_src);
-	strncpy(eth,ether_ntoa(src_eth), ETH_ADDRSTRLEN);
+	strlcpy(eth,ether_ntoa(src_eth), ETH_ADDRSTRLEN);
 
 	/* whole function is critical section: */
 	locked_probe = probe_lock(capture_info->probe->name);
@@ -146,11 +146,12 @@ int watch_ra(struct capture_info* const capture_info)
 					search = (char *)(pos + 8);
 					while (nd_opt_len > 0)
 					{
-						char domain[MAX_DOMAINLEN];
+						char domain[MAX_DOMAINLEN+1];
 						uint32_t domain_len = 0;
 						int stop = 0;
 						dnssl_t *new = NULL;
 
+						memset(domain, 0, sizeof(domain));
 						/* look for a domain to search */
 						while(*search != '\0')
 						{
@@ -193,7 +194,7 @@ int watch_ra(struct capture_info* const capture_info)
 							break;
 						}
 						new->lifetime = lifetime;
-						strncpy( new->domain, domain, MAX_DOMAINLEN);
+						strlcpy( new->domain, domain, MAX_DOMAINLEN+1);
 						new->next = NULL;
 
 						tmp_dnssl = dnssl;
@@ -484,7 +485,7 @@ print_routers(*routers);
 			{
 				memset(param_mismatched, 0, RA_PARAM_MISMATCHED_SIZE);
 				snprintf(param_mismatched, RA_PARAM_MISMATCHED_SIZE, "curhoplimit=%u;", curhoplimit);
-				strncat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
+				strlcat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
 				param_mismatch++;
 			}
 
@@ -492,7 +493,7 @@ print_routers(*routers);
 			{
 				memset(param_mismatched, 0, RA_PARAM_MISMATCHED_SIZE);
 				snprintf(param_mismatched, RA_PARAM_MISMATCHED_SIZE, "flags=%u;", flags_reserved);
-				strncat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
+				strlcat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
 				param_mismatch++;
 			}
 
@@ -501,7 +502,7 @@ print_routers(*routers);
 			{
 				memset(param_mismatched, 0, RA_PARAM_MISMATCHED_SIZE);
 				snprintf (param_mismatched, RA_PARAM_MISMATCHED_SIZE, "router_lifetime=%u;", router_lifetime);
-				strncat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
+				strlcat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
 				param_mismatch++;
 			}
 
@@ -510,7 +511,7 @@ print_routers(*routers);
 			{
 				memset(param_mismatched, 0, RA_PARAM_MISMATCHED_SIZE);
 				snprintf (param_mismatched, RA_PARAM_MISMATCHED_SIZE, "reachable_timer=%u;", reachable_timer);
-				strncat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
+				strlcat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
 				param_mismatch++;
 			}
 
@@ -519,7 +520,7 @@ print_routers(*routers);
 			{
 				memset(param_mismatched, 0, RA_PARAM_MISMATCHED_SIZE);
 				snprintf (param_mismatched, RA_PARAM_MISMATCHED_SIZE, "retrans_timer=%u;", retrans_timer);
-				strncat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
+				strlcat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
 				param_mismatch++;
 			}
 
@@ -613,28 +614,28 @@ print_routers(*routers);
 					{
 						memset(param_mismatched, 0, RA_PARAM_MISMATCHED_SIZE);
 						snprintf(param_mismatched, RA_PARAM_MISMATCHED_SIZE, "flags=%u;", prefix_flags_reserved);
-						strncat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
+						strlcat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
 						param_mismatch++;
 					}
 					if (prefix_reserved2 != 0) 
 					{
 						memset(param_mismatched, 0, RA_PARAM_MISMATCHED_SIZE);
 						snprintf(param_mismatched, RA_PARAM_MISMATCHED_SIZE, "reserved2=%u;", prefix_reserved2);
-						strncat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
+						strlcat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
 						param_mismatch++;
 					}
 					if (prefix_valid_time != router_prefix->param_valid_time) 
 					{
 						memset(param_mismatched, 0, RA_PARAM_MISMATCHED_SIZE);
 						snprintf (param_mismatched, RA_PARAM_MISMATCHED_SIZE, "valid_time=%u;", prefix_valid_time);
-						strncat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
+						strlcat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
 						param_mismatch++;
 					}
 					if (prefix_preferred_time != router_prefix->param_preferred_time) 
 					{
 						memset(param_mismatched, 0, RA_PARAM_MISMATCHED_SIZE);
 						snprintf (param_mismatched, RA_PARAM_MISMATCHED_SIZE, "preferred_time=%u;", prefix_preferred_time);
-						strncat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
+						strlcat(param_mismatched_list,param_mismatched,RA_PARAM_MISMATCHED_SIZE);
 						param_mismatch++;
 					}
 					if (param_mismatch>0) 
@@ -664,7 +665,7 @@ print_routers(*routers);
 					struct ether_addr * adv_eth = NULL;
 
 					adv_eth = (struct ether_addr *) mac;
-					strncpy(eth_opt,ether_ntoa(adv_eth), ETH_ADDRSTRLEN);
+					strlcpy(eth_opt,ether_ntoa(adv_eth), ETH_ADDRSTRLEN);
 					snprintf (buffer, NOTIFY_BUFFER_SIZE-1, "source link address %s different from ethernet source %s", eth_opt, eth );
 					alert_raise(2, "wrong source link address option", buffer, (struct ether_addr*) (ethernet_header->ether_shost), NULL, &capture_info->ip6_header->ip6_src, NULL);
 					ret = 2;
@@ -779,10 +780,11 @@ fprintf(stderr, "DNS Search List option with lifetime %u of length %u !!!\n", li
 				search = (char *)(pos + 8);
 				while (nd_opt_len > 0)
 				{
-					char domain[MAX_DOMAINLEN];
+					char domain[MAX_DOMAINLEN+1];
 					uint32_t domain_len = 0;
 					int stop = 0;
 
+					memset(domain, 0, sizeof(domain));
 					/* look for a domain to search */
 					while(*search != '\0')
 					{
